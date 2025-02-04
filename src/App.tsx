@@ -5,13 +5,14 @@ import { auth, User } from './config/Firebase'
 import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'
 import Login from './pages/Auth/Login'
+import ChatRoom from './features/Chat/components/ChatRoom'
 
 export default function App() {
   const [user, setUser] = useState<User>()
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(authUser => {
-      if (authUser) setUser(authUser)
+      setUser(authUser)
     })
     return () => unsubscribe()
   }, [])
@@ -25,6 +26,7 @@ export default function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path="/chat/:chatroomId" element={<ChatRoom />} />
       </Routes>
     </Router>
   )

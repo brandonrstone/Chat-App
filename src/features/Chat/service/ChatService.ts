@@ -1,8 +1,8 @@
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
 
-import { db } from '../config/Firebase'
+import { db } from '../../../config/Firebase'
 
-export const getOrCreateChatroom = async (user1Id: string, user2Id: string) => {
+export async function getOrCreateChatroom(user1Id: string, user2Id: string) {
   const chatroomsRef = collection(db, 'chatrooms')
 
   // Query for an existing chatroom between these two users
