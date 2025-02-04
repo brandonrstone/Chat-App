@@ -1,47 +1,48 @@
-import React, { useEffect, useState, type ReactElement } from 'react'
-import { doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { createContext, useEffect, useState, ReactNode } from 'react'
+import { onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 
 import { auth, db, User } from '../config/Firebase'
 
-type UserContextType = {
-  user: User
+interface UserContextType {
+  user: User | null
+  loading: boolean
 }
 
-export const UserContext = React.createContext<UserContextType | null>(null)
+export const UserContext = createContext<UserContextType | undefined>(undefined)
 
-export const UserContextProvider = ({ children }: { children: ReactElement }) => {
+export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!auth.currentUser) return // Ensure user is logged in
+    const unsubscribe = onAuthStateChanged(auth, async authUser => {
+      if (authUser) {
 
-      // Reference to Firestore doc, one-time
-      const userDocRef = doc(db, 'users', auth.currentUser.uid)
-      const userSnap = await getDoc(userDocRef)
+        // Fetch document from Firestore, *getDock is one-time fetch
+        const userDocRef = doc(db, 'users', authUser.uid)
+        const userSnap = await getDoc(userDocRef)
 
-      if (userSnap.exists()) {
-        setUser(prevUser => {
-          if (prevUser == null) return null
-
-          return {
-            ...prevUser,
-            createdAt: userSnap.data().createdAt,
+        if (userSnap.exists()) {
+          setUser({
+            uid: authUser.uid,
             displayName: userSnap.data().displayName,
             email: userSnap.data().email,
-            uid: userSnap.data().uid,
-          }
-        })
+            createdAt: userSnap.data().createdAt,
+            messages: []
+          })
+        }
       } else {
-        console.log('No such document!')
+        setUser(null)
       }
-    }
+      setLoading(false)
+    })
 
-    fetchUserData()
+    return () => unsubscribe()
   }, [])
 
   return (
-    <UserContext.Provider value={{ user }}>
+    <UserContext.Provider value={{ user, loading }}>
       {children}
     </UserContext.Provider>
   )
