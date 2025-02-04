@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { auth } from './config/Firebase'
+import type { User } from 'firebase/auth'
 
-import { auth, User } from './config/Firebase'
 import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'
 import Login from './pages/Auth/Login'
 import ChatRoom from './features/Chat/components/ChatRoom'
 
 export default function App() {
-  const [user, setUser] = useState<User>()
+  const [authUser, setAuthUser] = useState<User>()
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(authUser => {
-      setUser(authUser)
+      if (authUser == null) return
+      setAuthUser(authUser)
     })
+
     return () => unsubscribe()
   }, [])
 
@@ -22,7 +25,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={user ? <Dashboard /> : <Signup />} />
+        <Route path='/' element={authUser ? <Dashboard /> : <Signup />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
