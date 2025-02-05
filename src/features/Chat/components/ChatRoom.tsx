@@ -134,7 +134,7 @@ export default function ChatRoom() {
 
   return (
     <div className='h-screen flex flex-col justify-between'>
-      <div className='flex justify-between py-4 p-2 shadow-md'>
+      <div className='flex justify-between py-4 p-2 bg-slate-200 drop-shadow-md'>
         <Link to='/dashboard' >
           <ChevronLeft className='text-center text-primary hover:text-primary/90 active:scale-90' />
         </Link>
@@ -142,12 +142,12 @@ export default function ChatRoom() {
         <div />
       </div>
 
-      <div className='flex-1 p-2 overflow-x-scroll'>
+      <div className='flex-1 pb-6 p-2 overflow-x-scroll bg-slate-200'>
         {messages.map(message => (
           <>
             <div key={message.id}>
               <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black'}`}>{message.senderId === auth.currentUser?.uid ? user?.displayName : otherUser?.displayName}</strong>
-              <span className='pl-2 text-sm text-gray-400'>{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
+              <span className='pl-2 text-sm text-slate-400'>{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
             </div>
             <p>{message.text}</p>
           </>
@@ -157,10 +157,10 @@ export default function ChatRoom() {
       </div>
 
 
-      <div className='flex items-center'>
-        <div className='w-full flex justify-center items-center m-1 bg-slate-50  rounded-lg shadow-lg'>
+      <div className='flex items-center bg-slate-200'>
+        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-slate-300 rounded-lg shadow-lg -translate-y-2'>
           <Input
-            className='h-full flex-1 mx-2 shadow-none bg-slate-50'
+            className='h-full flex-1 shadow-none bg-slate-300'
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName}`}
             onKeyDown={handleKeyDown}
