@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { auth } from './config/Firebase'
-import type { User } from 'firebase/auth'
+import { auth, User } from './config/Firebase'
 
 import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'

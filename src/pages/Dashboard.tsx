@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { collection, getDocs } from 'firebase/firestore'
 
 import { db, logout, User } from '../config/Firebase'
 import { useUserContext } from '../hooks/useUserContext'
+
 import { UserList } from '../components/UserList'
-import { useEffect, useState } from 'react'
-import { collection, getDocs } from 'firebase/firestore'
 
 export default function Dashboard() {
   const { user, loading } = useUserContext()
