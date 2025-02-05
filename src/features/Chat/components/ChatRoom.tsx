@@ -4,7 +4,7 @@ import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from 
 
 import { db, auth } from '../../../config/Firebase'
 
-interface Message {
+type Message = {
   id: string
   senderId: string
   text: string
@@ -19,11 +19,12 @@ export default function ChatRoom() {
   useEffect(() => {
     if (!chatroomId) return
 
+    // Get current messages from particular chatroom
     const messagesRef = collection(db, 'chatrooms', chatroomId, 'messages')
     const q = query(messagesRef, orderBy('timestamp', 'asc'))
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setMessages(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Message)))
+    const unsubscribe = onSnapshot(q, snapshot => {
+      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message)))
     })
 
     return () => unsubscribe()
@@ -35,7 +36,7 @@ export default function ChatRoom() {
     await addDoc(collection(db, 'chatrooms', chatroomId!, 'messages'), {
       senderId: auth.currentUser.uid,
       text: newMessage,
-      timestamp: serverTimestamp(),
+      timestamp: serverTimestamp()
     })
 
     setNewMessage('')
