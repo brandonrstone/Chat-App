@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc } from 'firebase/firestore'
 import { format } from 'date-fns'
+import { ArrowUp, ChevronLeft } from 'lucide-react'
 
 import { db, auth, User } from '../../../config/Firebase'
 import { useUserContext } from '../../../hooks/useUserContext'
 
 import Input from '../../../components/Input'
 import Button from '../../../components/Button'
-import { ArrowUp, ChevronLeft } from 'lucide-react'
 
 type Message = {
   id: string
@@ -134,7 +134,7 @@ export default function ChatRoom() {
 
   return (
     <div className='h-screen flex flex-col justify-between'>
-      <div className='flex justify-between py-4 p-2 bg-slate-200 drop-shadow-md'>
+      <div className='w-full absolute top-0 flex justify-between py-4 p-2 drop-shadow-lg bg-white'>
         <Link to='/dashboard' >
           <ChevronLeft className='text-center text-primary hover:text-primary/90 active:scale-90' />
         </Link>
@@ -142,7 +142,7 @@ export default function ChatRoom() {
         <div />
       </div>
 
-      <div className='flex-1 pb-6 p-2 overflow-x-scroll bg-slate-200'>
+      <div className='flex-1 pb-6 p-2 overflow-x-scroll'>
         {messages.map(message => (
           <>
             <div key={message.id}>
@@ -157,10 +157,10 @@ export default function ChatRoom() {
       </div>
 
 
-      <div className='flex items-center bg-slate-200'>
-        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-slate-300 rounded-lg shadow-lg -translate-y-2'>
+      <div className='flex items-center'>
+        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white border rounded-lg shadow-lg -translate-y-2'>
           <Input
-            className='h-full flex-1 shadow-none bg-slate-300'
+            className='h-full flex-1 shadow-none'
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName}`}
             onKeyDown={handleKeyDown}
