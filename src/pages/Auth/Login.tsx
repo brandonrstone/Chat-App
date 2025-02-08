@@ -4,8 +4,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 
 import { auth } from '../../config/Firebase'
 
-import Input from '../../components/Input'
-import Button from '../../components/Button'
+import { Input } from '../../components/Input'
+import { Button } from '../../components/Button'
 
 export default function Login() {
   const [email, setEmail] = useState('')

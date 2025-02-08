@@ -17,14 +17,14 @@ export function UserList({ users }: { users: User[] }) {
 
   return (
     <div>
-      <h2>Users</h2>
-      <ul>
+      <h2 className='font-bold'>Users</h2>
+      <div className='flex flex-col space-y-2'>
         {users.map(u =>
           u.uid !== user?.uid
             ? <UserCard key={u.uid} user={u} startChat={startChat} />
             : null
         )}
-      </ul>
+      </div>
     </div>
   )
 }
@@ -37,7 +37,7 @@ type UserCardProps = {
 function UserCard({ user, startChat }: UserCardProps) {
 
   return (
-    <div className='p-4 shadow-md cursor-pointer' onClick={() => startChat(user.uid)}>
+    <div className='p-4 font-semibold bg-white hover:bg-slate-50 rounded-md shadow-md cursor-pointer' onClick={() => startChat(user.uid)}>
       {user.displayName}
     </div>
   )
