@@ -14,7 +14,7 @@ type ButtonProps<T extends ElementType = 'button'> = ComponentPropsWithoutRef<T>
   size?: keyof typeof ButtonStyles
 }
 
-export default function Button<T extends ElementType = 'button'>({ As, className, pill, size = 'md', ...props }: ButtonProps<T>) {
+export function Button<T extends ElementType = 'button'>({ As, className, pill, size = 'md', ...props }: ButtonProps<T>) {
   const Component = As ?? 'button'
   return <Component className={`block my-2 ${className ?? ''} ${pill ? 'rounded-full' : 'rounded-md'} ${ButtonStyles[size]}`} {...props} />
 }

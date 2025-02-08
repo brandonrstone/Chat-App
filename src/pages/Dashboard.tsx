@@ -5,6 +5,7 @@ import { collection, getDocs } from 'firebase/firestore'
 import { db, logout, User } from '../config/Firebase'
 import { useUserContext } from '../hooks/useUserContext'
 
+import { Button } from '../components/Button'
 import { UserList } from '../components/UserList'
 
 export default function Dashboard() {
@@ -16,13 +17,12 @@ export default function Dashboard() {
     const fetchUsers = async () => {
       const usersCollection = collection(db, 'users')
       const usersSnapshot = await getDocs(usersCollection)
-      const usersList = usersSnapshot.docs.map((doc) => doc.data() as User)
+      const usersList = usersSnapshot.docs.map(doc => doc.data() as User)
       setUsers(usersList)
     }
 
     fetchUsers()
   }, [])
-
 
   function logoutUser() {
     logout()
@@ -31,10 +31,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div>
-      <UserList users={users} />
+    <div className='p-2'>
       {loading ? <h2>Loading...</h2> : <h2>Welcome, {user?.displayName || 'User'}</h2>}
-      <button onClick={logoutUser}>Logout</button>
+      <UserList users={users} />
+      <Button onClick={logoutUser}>Logout</Button>
     </div>
   )
 }

@@ -7,8 +7,6 @@ type InputProps = ComponentPropsWithRef<'input'> & {
   pill?: boolean
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(({ className, pill, ...props }, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ className, pill, ...props }, ref) => {
   return <input type='text' className={`${inputStyles} ${className ?? ''} ${pill ? 'rounded-full' : ''} `} ref={ref} {...props} />
 })
-
-export default Input

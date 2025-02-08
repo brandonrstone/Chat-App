@@ -5,8 +5,8 @@ import { doc, setDoc } from 'firebase/firestore'
 
 import { auth, db } from '../../config/Firebase'
 
-import Input from '../../components/Input'
-import Button from '../../components/Button'
+import { Button } from '../../components/Button'
+import { Input } from '../../components/Input'
 
 export default function Signup() {
   const [email, setEmail] = useState('')

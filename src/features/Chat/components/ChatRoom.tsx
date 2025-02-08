@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc } from 'firebase/firestore'
 import { format } from 'date-fns'
-import { ArrowUp, ChevronLeft } from 'lucide-react'
+import { ArrowUp } from 'lucide-react'
 
 import { db, auth, User } from '../../../config/Firebase'
 import { useUserContext } from '../../../hooks/useUserContext'
 
-import Input from '../../../components/Input'
-import Button from '../../../components/Button'
+import { Input } from '../../../components/Input'
+import { Button } from '../../../components/Button'
+import { Header } from '../../../components/Header'
 
 type Message = {
   id: string
@@ -134,13 +135,7 @@ export default function ChatRoom() {
 
   return (
     <div className='h-screen flex flex-col justify-between'>
-      <div className='w-full absolute top-0 flex justify-between py-4 p-2 drop-shadow-lg bg-white'>
-        <Link to='/dashboard' >
-          <ChevronLeft className='text-center text-primary hover:text-primary/90 active:scale-90' />
-        </Link>
-        <h2 className='font-bold'>Chatroom</h2>
-        <div />
-      </div>
+      <Header recipient={otherUser?.displayName} />
 
       <div className='flex-1 pb-6 p-2 overflow-x-scroll'>
         {messages.map(message => (
