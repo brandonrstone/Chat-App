@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc } from 'firebase/firestore'
-import { format } from 'date-fns'
 import { ArrowUp } from 'lucide-react'
 
 import { db, auth, User } from '../../../config/Firebase'
 import { useUserContext } from '../../../hooks/useUserContext'
+import { formatTimestamp } from '../../../utils/formatters'
 
 import { Input } from '../../../components/Input'
 import { Button } from '../../../components/Button'
 import { Header } from '../../../components/Header'
+import { LoadingEllipsis } from '../../../components/LoadingEllipses'
 
 type Message = {
   id: string
@@ -25,13 +26,24 @@ export default function ChatRoom() {
   const [newMessage, setNewMessage] = useState('')
   const [otherUser, setOtherUser] = useState<User | null>(null)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const isInitialRender = useRef(true)
 
-  // Scroll to the end of a div upon sending a message
+  // Handle scrolling window behavior
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    // Prevent scroll when there are no messages
+    if (messages.length === 0) return
+
+    // First render --> scroll instantly
+    if (isInitialRender.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+      isInitialRender.current = false // Set to false after first render
+    } else {
+      // On subsequent renders (new messages) --> use smooth scrolling
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
   }, [messages])
 
-  // Get current messages from particular chatroom
+  // Get current messages for a particular chatroom
   useEffect(() => {
     if (!chatroomId) return
 
@@ -44,18 +56,6 @@ export default function ChatRoom() {
 
     return () => unsubscribe()
   }, [chatroomId])
-
-  async function sendMessage() {
-    if (!newMessage.trim() || !auth.currentUser) return
-
-    await addDoc(collection(db, 'chatrooms', chatroomId!, 'messages'), {
-      senderId: auth.currentUser.uid,
-      text: newMessage,
-      timestamp: serverTimestamp()
-    })
-
-    setNewMessage('')
-  }
 
   // Fetch the information of other user
   useEffect(() => {
@@ -104,27 +104,30 @@ export default function ChatRoom() {
     return () => unsubscribe()
   }, [chatroomId])
 
-  const formatTimestamp = (timestamp: Date) => {
-    if (!timestamp) return ''
+  async function sendMessage() {
+    if (!newMessage.trim() || !auth.currentUser) return
 
-    const messageDate = new Date(timestamp)
-    const now = new Date()
+    const newMessageData: Message = {
+      id: crypto.randomUUID(), // Temporary ID for React's key prop
+      senderId: auth.currentUser.uid,
+      text: newMessage,
+      timestamp: new Date() // Set local timestamp immediately
+    }
 
-    const isToday = messageDate.toDateString() === now.toDateString()
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const isYesterday = messageDate.toDateString() === yesterday.toDateString()
+    // Optimistically update UI
+    setMessages(prevMessages => [...prevMessages, newMessageData])
 
-    const timeFormat = format(messageDate, 'h:mm a') // e.g., '11:10 AM'
+    // Send message to Firestore
+    await addDoc(collection(db, 'chatrooms', chatroomId!, 'messages'), {
+      senderId: auth.currentUser.uid,
+      text: newMessage,
+      timestamp: serverTimestamp() // Firestore will replace this later
+    })
 
-    if (isToday) return `Today at ${timeFormat}`
-    if (isYesterday) return `Yesterday at ${timeFormat}`
-
-    // Return format as --> '2/2/2024 at 7:00PM'
-    return format(messageDate, "M/d/yyyy 'at' h:mm a")
+    setNewMessage('')
   }
 
-  // Use enter key to send message
+  // Send message by hitting enter key
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter' && newMessage.trim() !== '') {
       sendMessage()
@@ -139,13 +142,13 @@ export default function ChatRoom() {
 
       <div className='flex-1 pb-6 p-2 overflow-x-scroll'>
         {messages.map(message => (
-          <>
-            <div key={message.id}>
+          <div key={message.id}>
+            <div>
               <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black'}`}>{message.senderId === auth.currentUser?.uid ? user?.displayName : otherUser?.displayName}</strong>
               <span className='pl-2 text-sm text-slate-400'>{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
             </div>
             <p>{message.text}</p>
-          </>
+          </div>
         ))}
 
         <div ref={messagesEndRef} />
@@ -153,11 +156,11 @@ export default function ChatRoom() {
 
 
       <div className='flex items-center'>
-        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white border rounded-lg shadow-lg -translate-y-2'>
+        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white border rounded-xl shadow-lg -translate-y-2'>
           <Input
-            className='h-full flex-1 shadow-none'
+            className='w-full h-full flex-1 shadow-none'
             value={newMessage}
-            onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName}`}
+            onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName ?? <LoadingEllipsis />}`}
             onKeyDown={handleKeyDown}
           />
           <Button className='h-full flex items-center justify-center' pill onClick={sendMessage}>

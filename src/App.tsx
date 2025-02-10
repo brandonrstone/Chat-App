@@ -19,8 +19,6 @@ export default function App() {
     return () => unsubscribe()
   }, [])
 
-  console.log('Current user: ', auth.currentUser)
-
   return (
     <Router>
       <Routes>

@@ -34,6 +34,7 @@ export default function Dashboard() {
     <div className='p-2'>
       {loading ? <h2>Loading...</h2> : <h2>Welcome, {user?.displayName || 'User'}</h2>}
       <UserList users={users} />
+      <h1>My Conversations</h1>
       <Button onClick={logoutUser}>Logout</Button>
     </div>
   )

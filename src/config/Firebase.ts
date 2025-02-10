@@ -3,13 +3,12 @@ import { getAuth, GoogleAuthProvider, signOut } from 'firebase/auth'
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAxXFDDJSH-0Xhjc5f75fBu3yEd6_cV1do',
-  authDomain: 'chatroom-e85f5.firebaseapp.com',
-  projectId: 'chatroom-e85f5',
-  storageBucket: 'chatroom-e85f5.firebasestorage.app',
-  messagingSenderId: '544748367029',
-  appId: '1:544748367029:web:82c96a3db5c9c1727ce2fc',
-  measurementId: 'G-3L3ZW82HCE'
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
 // Initialization
