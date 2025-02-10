@@ -11,7 +11,6 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
-// Initialization
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
@@ -23,6 +22,12 @@ export type User = {
   displayName: string
   messages: string[]
   createdAt: Date
+}
+
+export type Message = {
+  senderId: string
+  text: string
+  timestamp: Date
 }
 
 export async function addUserToFirestore(user: User) {
