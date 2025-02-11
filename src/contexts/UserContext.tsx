@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState, ReactNode } from 'react'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore'
 
 import { auth, db, User } from '../config/Firebase'
 
@@ -18,11 +18,11 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const [recentChatroomUsers, setRecentChatroomUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Handle user authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async authUser => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-
-        // Fetch document from Firestore, *getDoc is one-time fetch
+        // Fetch document from Firestore
         const userDocRef = doc(db, 'users', authUser.uid)
         const userSnap = await getDoc(userDocRef)
 
@@ -34,6 +34,8 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
             createdAt: userSnap.data().createdAt,
             messages: []
           })
+        } else {
+          console.log('User document not found')
         }
       } else {
         setUser(null)
@@ -44,18 +46,18 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe()
   }, [])
 
-  // Fetch users of recent chats
+  // TODO: Get these to order correctly by the last activity
   useEffect(() => {
     if (!user) return
 
-    const fetchChatUsers = async () => {
-      const chatroomsRef = collection(db, 'chatrooms')
-      const q = query(chatroomsRef, where('users', 'array-contains', user.uid))
-      const chatroomSnapshot = await getDocs(q)
+    const chatroomsRef = collection(db, 'chatrooms')
+    const q = query(chatroomsRef, where('users', 'array-contains', user.uid), orderBy('lastActivity', 'desc'), limit(5))
 
+    // Real-time listener for changes in chatrooms collection
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const otherUserIds = new Set<string>()
 
-      chatroomSnapshot.forEach((doc) => {
+      snapshot.forEach(doc => {
         const chatroomData = doc.data()
         const participants: string[] = chatroomData.users
         const otherUserId = participants.find(uid => uid !== user.uid)
@@ -69,18 +71,18 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
         const usersQuery = query(usersRef, where('uid', 'in', Array.from(otherUserIds)))
         const usersSnapshot = await getDocs(usersQuery)
 
-        const usersList: User[] = usersSnapshot.docs.slice(0, 5).map(doc => doc.data() as User)
+        const usersList: User[] = usersSnapshot.docs.map(doc => doc.data() as User)
         setRecentChatroomUsers(usersList)
       } else {
         setRecentChatroomUsers([])
       }
-    }
+    })
 
-    fetchChatUsers()
+    return () => unsubscribe() // Clean up listener
   }, [user])
 
   async function logout() {
-    signOut(auth)
+    await signOut(auth)
   }
 
   return (
@@ -89,3 +91,4 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     </UserContext.Provider>
   )
 }
+

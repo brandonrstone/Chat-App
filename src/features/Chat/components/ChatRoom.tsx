@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc } from 'firebase/firestore'
+import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { ArrowUp } from 'lucide-react'
 
 import { db, auth, User } from '../../../config/Firebase'
@@ -33,7 +33,7 @@ export default function Chatroom() {
     // Prevent scroll when there are no messages
     if (messages.length === 0) return
 
-    // First render --> scroll instantly
+    // First render --> scroll to bottom instantly
     if (isInitialRender.current) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
       isInitialRender.current = false // Set to false after first render
@@ -124,6 +124,12 @@ export default function Chatroom() {
       timestamp: serverTimestamp() // Firestore will replace this later
     })
 
+    // Update lastActivity timestamp of the chatroom
+    const chatroomRef = doc(db, 'chatrooms', chatroomId!)
+    await updateDoc(chatroomRef, {
+      lastActivity: serverTimestamp() // Set lastActivity to the current server timestamp
+    })
+
     setNewMessage('')
   }
 
@@ -140,7 +146,7 @@ export default function Chatroom() {
     <div className='h-screen flex flex-col justify-between'>
       <ChatroomHeader recipient={otherUser?.displayName} />
 
-      <div className='flex-1 pb-6 p-2 overflow-x-scroll'>
+      <div className='flex-1 pb-6 p-2 mt-14 overflow-x-scroll'>
         {messages.map(message => (
           <div key={message.id}>
             <div>
@@ -153,7 +159,6 @@ export default function Chatroom() {
 
         <div ref={messagesEndRef} />
       </div>
-
 
       <div className='flex items-center'>
         <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white border rounded-xl shadow-lg -translate-y-2'>
