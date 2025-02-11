@@ -4,16 +4,14 @@ import { collection, getDocs } from 'firebase/firestore'
 
 import { db, logout, User } from '../config/Firebase'
 
-import { useUserContext } from '../hooks/useUserContext'
-
 import { Button } from '../components/Button'
 import { UserList } from '../components/UserList'
 import { useChatroomsContext } from '../hooks/useChatroomsContext'
 
 import { UserSearch } from '../features/UserSearch/components/UserSearch'
+import { Header } from '../components/Header'
 
 export default function Dashboard() {
-  const { user, loading } = useUserContext()
   const { chatrooms } = useChatroomsContext()
   const [users, setUsers] = useState<User[]>([])
   const navigate = useNavigate()
@@ -38,8 +36,8 @@ export default function Dashboard() {
   console.log(chatrooms)
 
   return (
-    <div className='p-2'>
-      {loading ? <h2>Loading...</h2> : <h2>Welcome, {user?.displayName || 'User'}</h2>}
+    <div className='h-screen flex flex-col justify-center items-center p-2'>
+      <Header />
       <UserSearch />
       <UserList users={users} />
       <h1>My Conversations</h1>

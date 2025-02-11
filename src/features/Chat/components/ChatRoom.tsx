@@ -7,9 +7,9 @@ import { db, auth, User } from '../../../config/Firebase'
 import { useUserContext } from '../../../hooks/useUserContext'
 import { formatTimestamp } from '../../../utils/formatters'
 
-import { Input } from '../../../components/Input'
 import { Button } from '../../../components/Button'
-import { Header } from '../../../components/Header'
+import { ChatroomHeader } from './ChatroomHeader'
+import { Input } from '../../../components/Input'
 import { LoadingEllipsis } from '../../../components/LoadingEllipses'
 
 type Message = {
@@ -19,7 +19,7 @@ type Message = {
   timestamp: Date
 }
 
-export default function ChatRoom() {
+export default function Chatroom() {
   const { user } = useUserContext()
   const { chatroomId } = useParams()
   const [messages, setMessages] = useState<Message[]>([])
@@ -138,7 +138,7 @@ export default function ChatRoom() {
 
   return (
     <div className='h-screen flex flex-col justify-between'>
-      <Header recipient={otherUser?.displayName} />
+      <ChatroomHeader recipient={otherUser?.displayName} />
 
       <div className='flex-1 pb-6 p-2 overflow-x-scroll'>
         {messages.map(message => (

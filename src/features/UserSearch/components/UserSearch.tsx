@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Input } from '../../../components/Input'
-import { db } from '../../../config/Firebase'
 import { collection, query, where, getDocs } from 'firebase/firestore'
+
+import { db } from '../../../config/Firebase'
+
+import { Input } from '../../../components/Input'
 
 export function UserSearch() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -34,7 +36,11 @@ export function UserSearch() {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center'>
+    <div className='max-w-sm flex flex-col justify-center items-center'>
+      <div>
+        Test
+
+      </div>
       <Input
         className='rounded-full shadow-md'
         onChange={handleUserSearch}
@@ -42,10 +48,10 @@ export function UserSearch() {
         placeholder='Search by username...'
       />
       {searchQuery.length > 1 && (
-        <div className='mt-2 p-2 bg-white border rounded-md shadow-md max-h-60 overflow-y-auto'>
+        <div className='w-full max-h-60 mt-2 p-2 bg-white border rounded-md shadow-md overflow-y-auto'>
           {userSuggestions.map((username, index) => (
-            <div key={index} className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
-              {username}
+            <div key={index} className='py-1 px-2 rounded-full hover:bg-gray-100 cursor-pointer'>
+              @{username}
             </div>
           ))}
         </div>

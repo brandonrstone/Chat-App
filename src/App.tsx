@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { auth, User } from './config/Firebase'
 
-import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'
 import Login from './pages/Auth/Login'
-import ChatRoom from './features/Chat/components/ChatRoom'
+import Dashboard from './pages/Dashboard'
+import Chatroom from './features/Chat/components/Chatroom'
 
 export default function App() {
   const [authUser, setAuthUser] = useState<User>()
@@ -26,7 +26,7 @@ export default function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
-        <Route path="/chat/:chatroomId" element={<ChatRoom />} />
+        <Route path='/chat/:chatroomId' element={<Chatroom />} />
       </Routes>
     </Router>
   )
