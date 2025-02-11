@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { auth, User } from './config/Firebase'
 
+import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'
 import Login from './pages/Auth/Login'
-import Dashboard from './pages/Dashboard'
 import Chatroom from './features/Chat/components/Chatroom'
 
 export default function App() {

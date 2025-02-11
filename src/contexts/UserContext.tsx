@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, ReactNode } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 
 import { auth, db, User } from '../config/Firebase'
@@ -7,6 +7,7 @@ import { auth, db, User } from '../config/Firebase'
 interface UserContextType {
   user: User | null
   loading: boolean
+  logout: () => Promise<void>
 }
 
 export const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -41,8 +42,12 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe()
   }, [])
 
+  async function logout() {
+    signOut(auth)
+  }
+
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ user, loading, logout }}>
       {children}
     </UserContext.Provider>
   )

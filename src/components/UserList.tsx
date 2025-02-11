@@ -35,7 +35,6 @@ type UserCardProps = {
 }
 
 function UserCard({ user, startChat }: UserCardProps) {
-
   return (
     <div className='p-4 font-semibold bg-white hover:bg-slate-50 rounded-md shadow-md cursor-pointer' onClick={() => startChat(user.uid)}>
       {user.displayName}

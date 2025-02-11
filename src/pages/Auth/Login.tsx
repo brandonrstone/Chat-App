@@ -27,11 +27,11 @@ export default function Login() {
 
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
-      <h2 className='mb-2 text-xl font-bold text-green-400'>Login</h2>
+      <h2 className='mb-2 text-xl font-bold text-primary'>Login</h2>
 
       <form className='flex flex-col justify-center items-center space-y-2' onSubmit={handleEmailLogin}>
-        <Input type='email' placeholder='Email' onChange={e => setEmail(e.target.value)} />
-        <Input type='password' placeholder='Password' onChange={e => setPassword(e.target.value)} />
+        <Input className='shadow-md' type='email' placeholder='Email' onChange={e => setEmail(e.target.value)} />
+        <Input className='shadow-md' type='password' placeholder='Password' onChange={e => setPassword(e.target.value)} />
         <Button className='w-full py-2' size='md'>Login</Button>
       </form>
 

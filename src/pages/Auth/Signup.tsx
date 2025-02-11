@@ -34,13 +34,13 @@ export default function Signup() {
 
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
-      <h2 className='mb-2 text-xl font-bold text-green-400'>Sign Up</h2>
+      <h2 className='mb-2 text-xl font-bold text-primary'>Sign Up</h2>
 
       {/* Email/Password Login */}
       <form className='flex flex-col justify-center items-center space-y-2' onSubmit={handleEmailSignup}>
-        <Input type='email' placeholder='Email' onChange={e => setEmail(e.target.value)} />
-        <Input type='password' placeholder='Password' onChange={e => setPassword(e.target.value)} />
-        <Input type="text" placeholder='Display Name' onChange={e => setDisplayName(e.target.value)} />
+        <Input className='shadow-md' type='email' placeholder='Email' onChange={e => setEmail(e.target.value)} />
+        <Input className='shadow-md' type='password' placeholder='Password' onChange={e => setPassword(e.target.value)} />
+        <Input className='shadow-md' type="text" placeholder='Display Name' onChange={e => setDisplayName(e.target.value)} />
         <Button className='w-full py-2' size='md' onClick={handleEmailSignup}>Sign Up</Button>
       </form>
 

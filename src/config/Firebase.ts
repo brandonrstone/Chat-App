@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, GoogleAuthProvider, signOut } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -49,7 +49,3 @@ export async function addUserToFirestore(user: User) {
 //   const result = await signInWithPopup(auth, googleProvider)
 //   await addUserToFirestore(result.user)
 // }
-
-export async function logout() {
-  signOut(auth)
-} 
