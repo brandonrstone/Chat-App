@@ -65,8 +65,9 @@ type DropdownMenuProps = {
   fadeIn: boolean
 }
 
+// TODO: Dropdown is behind chat search
 const DropdownMenu = ({ logout, fadeIn }: DropdownMenuProps) => (
-  <div className={`absolute -right-1.5 top-12 w-48 bg-white border px-2 rounded-md shadow-md transition-opacity duration-300 ${fadeIn ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+  <div className={`absolute -right-1.5 top-12 w-48 bg-white border px-2 rounded-md shadow-md transition-opacity duration-300 z-50 ${fadeIn ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
     <DropdownItem Icon={User} label='Profile' />
     <div className='border-b' />
     <DropdownItem Icon={Settings} label='Settings' />

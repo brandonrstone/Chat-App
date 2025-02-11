@@ -9,9 +9,10 @@ import { getOrCreateChatroom } from '../../Chat/service/ChatService'
 import { useUserContext } from '../../../hooks/useUserContext'
 
 import { Input } from '../../../components/Input'
+import { Pill } from '../../../components/Pill'
 
 export function UserSearch() {
-  const { user } = useUserContext()
+  const { user, recentChatroomUsers } = useUserContext()
   const [searchQuery, setSearchQuery] = useState('')
   const [userSuggestions, setUserSuggestions] = useState<User[]>([])
   const navigate = useNavigate()
@@ -67,21 +68,26 @@ export function UserSearch() {
       <div className='mb-2 font-semibold'>Chat App v1.0</div>
       <Input className='w-full rounded-full shadow-md placeholder:text-sm' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
-      {searchQuery.length > 1 ? (
-        <div className='absolute top-[5rem] w-full max-h-60 mt-2 p-2 bg-white border rounded-md shadow-md overflow-y-auto'>
-          {userSuggestions.map((user, index) => (
-            <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 cursor-pointer group' onClick={() => startChat(user.uid)}>
-              <span>@{user.displayName}</span>
-              <ChevronRight className='w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-[-10px] transition-all duration-300 ease-out' />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className='aboslute top-[5rem] w-full'>
-          {/* Previous convos */}
-          Test
-        </div>
-      )}
+      <div className='absolute top-[5rem] w-full flex justify-center items-center'>
+        {searchQuery.length > 1 ? (
+          <div className='w-full max-h-60 mt-2 p-2 bg-white border rounded-md shadow-md overflow-y-auto'>
+            {userSuggestions.map((user, index) => (
+              <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 cursor-pointer group' onClick={() => startChat(user.uid)}>
+                <span>@{user.displayName}</span>
+                <ChevronRight className='w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-[-10px] transition-all duration-300 ease-out' />
+              </div>
+            ))}
+          </div>
+        ) : (
+          // If not searching, render recent chat users
+          <div className='w-full max-h-60 flex justify-center items-center flex-wrap mt-2 rounded-md'>
+            {recentChatroomUsers
+              .map(user => (
+                <Pill key={user.uid} displayName={user.displayName} userId={user.uid} onClick={() => startChat(user.uid)} />
+              ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
