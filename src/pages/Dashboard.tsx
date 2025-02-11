@@ -1,6 +1,6 @@
 import { UserSearch } from '../features/UserSearch/components/UserSearch'
 
-import { Header } from '../components/Header'
+import { Header } from '../components/ui/Header'
 
 export default function Dashboard() {
   // const { chatrooms } = useChatroomsContext()

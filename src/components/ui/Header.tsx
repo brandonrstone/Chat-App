@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogOut, Settings, User } from 'lucide-react'
 
-import { useUserContext } from '../hooks/useUserContext'
+import { useUserContext } from '../../hooks/useUserContext'
 
 export function Header() {
   const { user, logout } = useUserContext()

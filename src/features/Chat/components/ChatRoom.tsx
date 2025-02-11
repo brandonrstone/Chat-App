@@ -7,10 +7,10 @@ import { db, auth, User } from '../../../config/Firebase'
 import { useUserContext } from '../../../hooks/useUserContext'
 import { formatTimestamp } from '../../../utils/formatters'
 
-import { Button } from '../../../components/Button'
+import { Button } from '../../../components/ui/Button'
 import { ChatroomHeader } from './ChatroomHeader'
-import { Input } from '../../../components/Input'
-import { LoadingEllipsis } from '../../../components/LoadingEllipses'
+import { Input } from '../../../components/ui/Input'
+import { LoadingEllipsis } from '../../../components/ui/LoadingEllipses'
 
 type Message = {
   id: string

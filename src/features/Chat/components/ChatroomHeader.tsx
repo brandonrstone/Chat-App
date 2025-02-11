@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ChevronLeft } from 'lucide-react'
 
-import { LoadingEllipsis } from '../../../components/LoadingEllipses'
+import { LoadingEllipsis } from '../../../components/ui/LoadingEllipses'
 
 type HeaderProps = {
   recipient?: string

@@ -1,41 +1,54 @@
-import { type FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 
 import { auth } from '../../config/Firebase'
+import { Input } from '../../components/ui/Input'
+import { Button } from '../../components/ui/Button'
 
-import { Input } from '../../components/Input'
-import { Button } from '../../components/Button'
+const LoginSchema = z.object({
+  email: z.string().email('Email address is not valid'),
+  password: z.string().min(6, 'Password must be at least 6 characters')
+})
+
+type LoginFormData = z.infer<typeof LoginSchema>
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) })
+  const location = useLocation()
 
-  console.log(email, password)
-
-  async function handleEmailLogin(e: FormEvent) {
-    e.preventDefault()
-    console.log('Logged 1')
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        console.log('Logged 2')
-        navigate('/dashboard')
-      })
-      .catch(console.error)
+  async function handleEmailLogin(data: LoginFormData) {
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password)
+        .then(() => navigate(location.state?.from?.pathname || '/dashboard'))
+        .catch(console.error)
+    } catch (error) {
+      console.error('Login error:', error)
+    }
   }
 
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
       <h2 className='mb-2 text-xl font-bold text-primary'>Login</h2>
 
-      <form className='flex flex-col justify-center items-center space-y-2' onSubmit={handleEmailLogin}>
-        <Input className='shadow-md' type='email' placeholder='Email' onChange={e => setEmail(e.target.value)} />
-        <Input className='shadow-md' type='password' placeholder='Password' onChange={e => setPassword(e.target.value)} />
-        <Button className='w-full py-2' size='md'>Login</Button>
+      <form className='flex flex-col justify-center items-center space-y-2' onSubmit={handleSubmit(handleEmailLogin)}>
+        <Input className='shadow-md' type='text' placeholder='Email' {...register('email')} />
+        <Input className='shadow-md' type='password' placeholder='Password' {...register('password')} />
+        <Button className='w-full py-2' size='md' type='submit' disabled={isSubmitting}>
+          {isSubmitting ? 'Logging in...' : 'Login'}
+        </Button>
       </form>
 
-      <p className='mt-2'>Need an account? <Link className='text-blue-500 hover:text-blue-600 cursor-pointer' to='/signup'>Sign Up</Link></p>
+      <div className='relative flex justify-center'>
+        <p className='mt-2'>Need an account? <Link className='text-blue-500 hover:text-blue-600 cursor-pointer' to='/signup'>Sign Up</Link></p>
+        <div className='absolute top-10'>
+          {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+          {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+        </div>
+      </div>
     </div>
   )
 }

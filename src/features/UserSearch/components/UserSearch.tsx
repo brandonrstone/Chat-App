@@ -8,8 +8,8 @@ import { db, type User } from '../../../config/Firebase'
 import { getOrCreateChatroom } from '../../Chat/service/ChatService'
 import { useUserContext } from '../../../hooks/useUserContext'
 
-import { Input } from '../../../components/Input'
-import { Pill } from '../../../components/Pill'
+import { Input } from '../../../components/ui/Input'
+import { Pill } from '../../../components/ui/Pill'
 
 export function UserSearch() {
   const { user, recentChatroomUsers } = useUserContext()
