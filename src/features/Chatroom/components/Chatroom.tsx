@@ -168,7 +168,7 @@ export default function Chatroom() {
             onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName ?? <LoadingEllipsis />}`}
             onKeyDown={handleKeyDown}
           />
-          <Button className='h-full flex items-center justify-center' pill onClick={sendMessage}>
+          <Button size='sm' className='h-full flex items-center justify-center' pill onClick={sendMessage}>
             <ArrowUp />
           </Button>
         </div>

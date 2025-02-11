@@ -8,6 +8,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import { auth, db } from '../../config/Firebase'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
+import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
 
 const SignupSchema = z.object({
   displayName: z.string().min(2, 'Display Name is not long enough'),
@@ -51,7 +52,7 @@ export default function Signup() {
         <Input className='shadow-md' type="email" placeholder="Email" {...register('email')} />
         <Input className='shadow-md' type="password" placeholder="Password" {...register('password')} />
         <Input className='shadow-md' type="password" placeholder="Confirm Password" {...register('confirmPassword')} />
-        <Button className='w-full py-2' size='md' type="submit" disabled={isSubmitting}>{isSubmitting ? 'Signing Up...' : 'Sign Up'}</Button>
+        <Button className='w-full py-2' size='md' type="submit" disabled={isSubmitting}>{isSubmitting ? <LoadingEllipsis /> : 'Sign Up'}</Button>
       </form>
 
       <div className='relative flex justify-center'>

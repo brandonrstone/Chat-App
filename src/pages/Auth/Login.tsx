@@ -7,10 +7,11 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../config/Firebase'
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
+import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
 
 const LoginSchema = z.object({
   email: z.string().email('Email address is not valid'),
-  password: z.string().min(6, 'Password must be at least 6 characters')
+  password: z.string().min(6, 'Invalid password')
 })
 
 type LoginFormData = z.infer<typeof LoginSchema>
@@ -24,6 +25,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
         .then(() => navigate(location.state?.from?.pathname || '/dashboard'))
+        // TODO: Add logic for incorrect email/password
         .catch(console.error)
     } catch (error) {
       console.error('Login error:', error)
@@ -38,7 +40,7 @@ export default function Login() {
         <Input className='shadow-md' type='text' placeholder='Email' {...register('email')} />
         <Input className='shadow-md' type='password' placeholder='Password' {...register('password')} />
         <Button className='w-full py-2' size='md' type='submit' disabled={isSubmitting}>
-          {isSubmitting ? 'Logging in...' : 'Login'}
+          {isSubmitting ? <LoadingEllipsis /> : 'Login'}
         </Button>
       </form>
 

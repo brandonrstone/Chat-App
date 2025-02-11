@@ -1,7 +1,7 @@
 const PillColors = [
   'bg-primary/20 hover:bg-primary/40 hover:shadow-lg hover:shadow-primary/20',
-  'bg-red-200 hover:bg-red-300  hover:shadow-lg hover:shadow-red-300/20',
-  'bg-green-200 hover:bg-green-300  hover:shadow-lg hover:shadow-green-300/20',
+  'bg-red-200 hover:bg-red-300 hover:shadow-lg hover:shadow-red-300/20',
+  'bg-green-200 hover:bg-green-300 hover:shadow-lg hover:shadow-green-300/20',
   'bg-yellow-200 hover:bg-yellow-300 hover:shadow-lg hover:shadow-yellow-300/20',
   'bg-blue-200 hover:bg-blue-300 hover:shadow-lg hover:shadow-blue-300/20'
 ] as const

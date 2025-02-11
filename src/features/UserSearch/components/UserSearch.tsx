@@ -5,7 +5,7 @@ import { ChevronRight } from 'lucide-react'
 
 import { db, type User } from '../../../config/Firebase'
 
-import { getOrCreateChatroom } from '../../Chat/service/ChatService'
+import { getOrCreateChatroom } from '../../Chatroom/service/ChatService'
 import { useUserContext } from '../../../hooks/useUserContext'
 
 import { Input } from '../../../components/ui/Input'

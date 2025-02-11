@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'
 import Login from './pages/Auth/Login'
-import Chatroom from './features/Chat/components/Chatroom'
+import Chatroom from './features/Chatroom/components/Chatroom'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 
 export default function App() {
