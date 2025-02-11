@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { ChevronRight } from 'lucide-react'
@@ -17,17 +17,6 @@ export function UserSearch() {
   const [userSuggestions, setUserSuggestions] = useState<User[]>([])
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const usersCollection = collection(db, 'users')
-      const usersSnapshot = await getDocs(usersCollection)
-      const usersList = usersSnapshot.docs.map(doc => doc.data() as User)
-      setUserSuggestions(usersList)
-    }
-
-    fetchUsers()
-  }, [])
-
   async function handleUserSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const queryText = e.target.value
     setSearchQuery(queryText)
@@ -37,12 +26,11 @@ export function UserSearch() {
       const q = query(
         collection(db, 'users'),
         where('displayName', '>=', queryText),
-        where('displayName', '<=', queryText + '\uf8ff') // to match case-insensitive search
+        where('displayName', '<=', queryText + '\uf8ff') // This should match case-insensitive search
       )
 
       const querySnapshot = await getDocs(q)
       const suggestedUsers: User[] = []
-
       querySnapshot.forEach(doc => {
         if (doc.data().uid === user?.uid) return
 

@@ -38,7 +38,7 @@ export function Header() {
   }
 
   return (
-    <div className='w-full absolute top-0 flex justify-between items-center p-4 bg-white drop-shadow-lg'>
+    <div className='w-full absolute top-0 flex justify-between items-center p-4 bg-white drop-shadow-lg z-50'>
       <p className='text-slate-400 font-bold'>@{user?.displayName}</p>
       <div ref={menuRef} className='relative'>
         <Hamburger isOpen={isOpen} toggle={handleToggle} />
