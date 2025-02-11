@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs } from 'firebase/firestore'
+import { ChevronRight } from 'lucide-react'
 
 import { db, type User } from '../../../config/Firebase'
 
@@ -8,7 +9,6 @@ import { getOrCreateChatroom } from '../../Chat/service/ChatService'
 import { useUserContext } from '../../../hooks/useUserContext'
 
 import { Input } from '../../../components/Input'
-import { ChevronRight } from 'lucide-react'
 
 export function UserSearch() {
   const { user } = useUserContext()
@@ -65,16 +65,21 @@ export function UserSearch() {
   return (
     <div className='relative sm:w-[300px] md:w-[400px] flex flex-col justify-center items-center'>
       <div className='mb-2 font-semibold'>Chat App v1.0</div>
-      <Input className='w-full rounded-full shadow-md' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
+      <Input className='w-full rounded-full shadow-md placeholder:text-sm' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
-      {searchQuery.length > 1 && (
+      {searchQuery.length > 1 ? (
         <div className='absolute top-[5rem] w-full max-h-60 mt-2 p-2 bg-white border rounded-md shadow-md overflow-y-auto'>
           {userSuggestions.map((user, index) => (
-            <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 cursor-pointer group' onClick={() => startChat(user.uid)} >
+            <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 cursor-pointer group' onClick={() => startChat(user.uid)}>
               <span>@{user.displayName}</span>
               <ChevronRight className='w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-[-10px] transition-all duration-300 ease-out' />
             </div>
           ))}
+        </div>
+      ) : (
+        <div className='aboslute top-[5rem] w-full'>
+          {/* Previous convos */}
+          Test
         </div>
       )}
     </div>

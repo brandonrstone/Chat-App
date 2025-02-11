@@ -128,11 +128,11 @@ export default function Chatroom() {
   }
 
   // Send message by hitting enter key
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter' && newMessage.trim() !== '') {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && newMessage.trim() !== '') {
       sendMessage()
       setNewMessage('')
-      event.preventDefault()
+      e.preventDefault()
     }
   }
 
