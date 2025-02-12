@@ -54,7 +54,7 @@ export function UserSearch() {
   return (
     <div className='relative sm:w-[300px] md:w-[400px] flex flex-col justify-center items-center'>
       <div className='mb-2 font-semibold'>Chat App v1.0</div>
-      <Input className='w-full rounded-full bg-white dark:bg-slate-800 shadow-md placeholder:text-black dark:outline-white dark:outline-1 dark:placeholder:text-white placeholder:text-sm' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
+      <Input className='w-full rounded-full bg-white dark:bg-slate-800 shadow-md placeholder:text-black dark:outline-white dark:border outline-0 dark:placeholder:text-white placeholder:text-sm' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
       <div className='absolute top-[5rem] w-full flex justify-center items-center'>
         {searchQuery.length > 1 ? (
