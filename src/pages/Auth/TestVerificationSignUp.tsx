@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { sendSignInLinkToEmail } from 'firebase/auth'
 

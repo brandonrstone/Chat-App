@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
+import { MessageCircleMore } from 'lucide-react'
 
 import { auth, db } from '../../config/Firebase'
 import { Button } from '../../components/ui/Button'
@@ -44,6 +45,11 @@ export default function Signup() {
 
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
+      <div className='relative flex justify-center items-center mb-12'>
+        <h1 className='font-poppins text-5xl font-extrabold'>Chat</h1>
+        <MessageCircleMore className='absolute bottom-6 left-32 w-12 h-12 text-primary' />
+      </div>
+
       <h2 className='mb-2 text-xl font-bold text-primary'>Sign Up</h2>
 
       {/* Email/Password Signup Form */}

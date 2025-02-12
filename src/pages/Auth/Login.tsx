@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import { MessageCircleMore } from 'lucide-react'
 
 import { auth } from '../../config/Firebase'
 import { Input } from '../../components/ui/Input'
@@ -34,7 +35,12 @@ export default function Login() {
 
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
-      <h2 className='mb-2 text-xl font-bold text-primary'>Login</h2>
+      <div className='relative flex justify-center items-center mb-12'>
+        <h1 className='font-poppins text-5xl font-extrabold'>Chat</h1>
+        <MessageCircleMore className='absolute bottom-6 left-32 w-12 h-12 text-primary' />
+      </div>
+
+      <h2 className='mb-2 text-xl font-semibold text-primary'>Login</h2>
 
       <form className='flex flex-col justify-center items-center space-y-2' onSubmit={handleSubmit(handleEmailLogin)}>
         <Input className='shadow-md' type='text' placeholder='Email' {...register('email')} />

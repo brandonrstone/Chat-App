@@ -22,17 +22,19 @@ TODO:
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/test-verification-signup' element={<TestVerificationSignUp />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/chat/:chatroomId' element={<Chatroom />} />
-        </Route>
-      </Routes>
-    </Router>
+    <html>
+      <Router>
+        <Routes>
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/test-verification-signup' element={<TestVerificationSignUp />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='/' element={<Dashboard />} />
+            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/chat/:chatroomId' element={<Chatroom />} />
+          </Route>
+        </Routes>
+      </Router>
+    </html>
   )
 }
