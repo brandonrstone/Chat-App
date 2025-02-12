@@ -31,8 +31,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
             uid: authUser.uid,
             displayName: userSnap.data().displayName,
             email: userSnap.data().email,
-            createdAt: userSnap.data().createdAt,
-            messages: []
+            createdAt: userSnap.data().createdAt
           })
         } else {
           console.log('User document not found')

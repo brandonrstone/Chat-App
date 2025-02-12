@@ -20,7 +20,6 @@ export type User = {
   uid: string,
   email: string
   displayName: string
-  messages: string[]
   createdAt: Date
 }
 
