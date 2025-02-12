@@ -48,20 +48,20 @@ export default function Signup() {
 
       {/* Email/Password Signup Form */}
       <form className='flex flex-col justify-center items-center space-y-1' onSubmit={handleSubmit(handleEmailSignup)}>
-        <Input className='shadow-md' type="text" placeholder="Display Name" {...register('displayName')} />
-        <Input className='shadow-md' type="email" placeholder="Email" {...register('email')} />
-        <Input className='shadow-md' type="password" placeholder="Password" {...register('password')} />
-        <Input className='shadow-md' type="password" placeholder="Confirm Password" {...register('confirmPassword')} />
-        <Button className='w-full py-2' size='md' type="submit" disabled={isSubmitting}>{isSubmitting ? <LoadingEllipsis /> : 'Sign Up'}</Button>
+        <Input className='shadow-md' type='text' placeholder='Display Name' {...register('displayName')} />
+        <Input className='shadow-md' type='email' placeholder='Email' {...register('email')} />
+        <Input className='shadow-md' type='password' placeholder='Password' {...register('password')} />
+        <Input className='shadow-md' type='password' placeholder='Confirm Password' {...register('confirmPassword')} />
+        <Button className='w-full py-2' size='md' type='submit' disabled={isSubmitting}>{isSubmitting ? <LoadingEllipsis /> : 'Sign Up'}</Button>
       </form>
 
       <div className='relative flex justify-center'>
         <p className='mt-2'>Already have an account? <Link className='text-blue-500 hover:text-blue-600 cursor-pointer' to='/login'>Login</Link></p>
         <div className='absolute top-10'>
-          {errors.displayName && <p className="text-xs text-red-400">{errors.displayName.message}</p>}
-          {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
-          {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
-          {errors.confirmPassword && <p className="text-xs text-red-400">{errors.confirmPassword.message}</p>}
+          {errors.displayName && <p className='text-xs text-red-400'>{errors.displayName.message}</p>}
+          {errors.email && <p className='text-xs text-red-400'>{errors.email.message}</p>}
+          {errors.password && <p className='text-xs text-red-400'>{errors.password.message}</p>}
+          {errors.confirmPassword && <p className='text-xs text-red-400'>{errors.confirmPassword.message}</p>}
         </div>
       </div>
     </div>
