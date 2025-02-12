@@ -161,9 +161,9 @@ export default function Chatroom() {
       </div>
 
       <div className='flex items-center'>
-        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white border rounded-xl shadow-lg -translate-y-2'>
+        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white dark:bg-slate-800  border rounded-xl shadow-lg -translate-y-2'>
           <Input
-            className='w-full h-full flex-1 shadow-none'
+            className='w-full h-full flex-1 bg-white dark:bg-slate-800 shadow-none placeholder:text-black dark:placeholder:text-white'
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName ?? <LoadingEllipsis />}`}
             onKeyDown={handleKeyDown}

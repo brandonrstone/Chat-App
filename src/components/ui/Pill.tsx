@@ -17,5 +17,5 @@ export function Pill({ displayName, userId, onClick }: PillProps) {
   const colorIndex = userId.split('').reduce((prevChar, currChar) => prevChar + currChar.charCodeAt(0), 0) % PillColors.length
   const color = PillColors[colorIndex]
 
-  return <div className={`inline-block px-2.5 py-0.5 m-0.5 font-medium rounded-full cursor-pointer ${color} active:scale-95 transition-all duration-200`} onClick={onClick}>{displayName} </div>
+  return <div className={`inline-block px-2.5 py-0.5 m-0.5 text-black dark:text-slate-800 font-medium rounded-full cursor-pointer ${color} active:scale-95 transition-all duration-200`} onClick={onClick}>{displayName} </div>
 }

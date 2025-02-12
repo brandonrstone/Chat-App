@@ -10,19 +10,20 @@ import TestVerificationSignUp from './pages/Auth/TestVerificationSignUp'
 /*
 TODO:
 
-1.) In SignUp/Login, put an icon or some branding
-2.) Dark mode support
-3.) email verification codes for signup
-4.) Profile
-5.) Settings
-6.) Make Brandon a contact show for all
-7.) Don't allow duplicate user names
+- Dark mode support
+- Incorrect username/password feedback
+- email verification codes for signup
+- Profile
+- Settings
+- Make Brandon a contact show for all
+- Don't allow duplicate user names
+- Friend system
 
 */
 
 export default function App() {
   return (
-    <html>
+    <html className='text-black dark:text-white bg-white dark:bg-slate-800'>
       <Router>
         <Routes>
           <Route path='/signup' element={<Signup />} />
