@@ -10,8 +10,8 @@ import { Button } from '../../components/ui/Button'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
 
 const LoginSchema = z.object({
-  email: z.string().email('Email address is not valid'),
-  password: z.string().min(6, 'Invalid password')
+  email: z.string().email('Email address is not valid.'),
+  password: z.string().min(6, 'Invalid password.')
 })
 
 type LoginFormData = z.infer<typeof LoginSchema>
