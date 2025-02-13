@@ -10,6 +10,7 @@ import TestVerificationSignUp from './pages/Auth/TestVerificationSignUp'
 /*
 TODO:
 
+- If search results === 0 don't return a drop down
 - Dark mode support
 - Incorrect username/password feedback
 - email verification codes for signup
@@ -31,7 +32,6 @@ export default function App() {
           <Route path='/test-verification-signup' element={<TestVerificationSignUp />} />
           <Route element={<ProtectedRoute />}>
             <Route path='/' element={<Dashboard />} />
-            <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/chat/:chatroomId' element={<Chatroom />} />
           </Route>
         </Routes>
