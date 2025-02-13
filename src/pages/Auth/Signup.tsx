@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import { MessageCircleMore } from 'lucide-react'
 
 import { auth, db } from '../../config/Firebase'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
+import { FirebaseError } from 'firebase/app'
 
 const SignupSchema = z.object({
   displayName: z.string().min(2, 'Display Name is not long enough.'),
@@ -25,22 +26,42 @@ type SignupFormData = z.infer<typeof SignupSchema>
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignupFormData>({ resolver: zodResolver(SignupSchema) })
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<SignupFormData>({ resolver: zodResolver(SignupSchema) })
 
   async function handleEmailSignup(data: SignupFormData) {
     const { email, password, displayName } = data
 
     try {
+      // Check if the displayName already exists in Firestore
+      const usersRef = collection(db, 'users')
+      const displayNameQuery = query(usersRef, where('displayName', '==', displayName))
+      const querySnapshot = await getDocs(displayNameQuery)
+
+      // If displayName is already taken, prevent signup
+      if (!querySnapshot.empty) {
+        return setError('displayName', { type: 'manual', message: 'Display name already taken.' })
+      }
+
+      // Proceed with user creation if the displayName is available
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+
+      // Add the user to Firestore
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         uid: userCredential.user.uid,
         email,
         displayName,
         createdAt: new Date()
       })
+
       navigate('/')
     } catch (error) {
-      console.error('Signup error:', error)
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/email-already-in-use') {
+          setError('password', { type: 'manual', message: 'Email already in use.' })
+        } else {
+          setError('email', { type: 'manual', message: 'An unexpected error occurred. Please try again.' })
+        }
+      }
     }
   }
 

@@ -11,13 +11,11 @@ import NotFound from './components/routing/NotFound'
 /*
 TODO:
 
+- Enable Firebase functions to do 2FA Code
 - Dedicated colors for darkmode
-- Incorrect username/password feedback
 - email verification codes for signup
 - Profile
-- Settings
 - Make Brandon a contact show for all
-- Don't allow duplicate user names
 - Friend system
 
 */

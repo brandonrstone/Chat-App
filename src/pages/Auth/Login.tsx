@@ -9,6 +9,7 @@ import { auth } from '../../config/Firebase'
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
+import { FirebaseError } from 'firebase/app'
 
 const LoginSchema = z.object({
   email: z.string().email('Email address is not valid.'),
@@ -19,17 +20,23 @@ type LoginFormData = z.infer<typeof LoginSchema>
 
 export default function Login() {
   const navigate = useNavigate()
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) })
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) })
   const location = useLocation()
 
   async function handleEmailLogin(data: LoginFormData) {
+    const { email, password } = data
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password)
-        .then(() => navigate(location.state?.from?.pathname || '/'))
-        // TODO: Add logic for incorrect email/password
-        .catch(console.error)
+      await signInWithEmailAndPassword(auth, email, password)
+      navigate(location.state?.from?.pathname || '/')
     } catch (error) {
-      console.error('Login error:', error)
+      if (error instanceof FirebaseError) {
+        // Handle specific Firebase authentication errors
+        if (error.code === 'auth/invalid-credential') {
+          setError('password', { type: 'manual', message: 'Invalid email or passowrd.' })
+        } else {
+          setError('email', { type: 'manual', message: 'An unexpected error occurred. Please try again.' })
+        }
+      }
     }
   }
 
