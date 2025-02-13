@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
+import { Moon, Sun } from 'lucide-react'
 
 import { useThemeContext } from '../../hooks/useThemeContext'
-import { Moon, Sun } from 'lucide-react'
 
 export function ThemeToggleButton() {
   const { darkMode, setDarkMode } = useThemeContext()
