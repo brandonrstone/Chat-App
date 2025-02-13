@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
   darkMode: 'class',
   theme: {
@@ -12,9 +12,9 @@ export default {
         'primary-dark': 'rgb(30 41 59 / var(--tw-bg-opacity, 1))'
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'], // Add your custom font
-      },
-    },
+        poppins: ['Poppins', 'sans-serif']
+      }
+    }
   },
   plugins: []
 }
