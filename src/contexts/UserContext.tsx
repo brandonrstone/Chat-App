@@ -4,7 +4,7 @@ import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnaps
 
 import { auth, db, User } from '../config/Firebase'
 
-interface UserContextType {
+type UserContextType = {
   user: User | null
   recentChatroomUsers: User[]
   loading: boolean

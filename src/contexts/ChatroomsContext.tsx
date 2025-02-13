@@ -4,7 +4,7 @@ import { collection, onSnapshot } from 'firebase/firestore'
 
 import { auth, db, Message } from '../config/Firebase'
 
-interface ChatroomsContextType {
+type ChatroomsContextType = {
   chatrooms: Message[]
   setChatrooms: React.Dispatch<React.SetStateAction<Message[]>>
 }
