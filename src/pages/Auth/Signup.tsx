@@ -28,13 +28,14 @@ export default function Signup() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignupFormData>({ resolver: zodResolver(SignupSchema) })
 
   async function handleEmailSignup(data: SignupFormData) {
+    const { email, password, displayName } = data
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         uid: userCredential.user.uid,
-        email: data.email,
-        displayName: data.displayName,
-        messages: [],
+        email,
+        displayName,
         createdAt: new Date()
       })
       navigate('/')
