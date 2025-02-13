@@ -46,7 +46,7 @@ export default function Signup() {
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
       <div className='relative flex justify-center items-center mb-12'>
-        <h1 className='font-poppins text-5xl font-extrabold'>Chat</h1>
+        <h1 className='font-poppins text-5xl font-extrabold'>Chat.</h1>
         <MessageCircleMore className='absolute bottom-6 left-32 w-12 h-12 text-primary' />
       </div>
 
@@ -62,7 +62,7 @@ export default function Signup() {
       </form>
 
       <div className='relative flex justify-center'>
-        <p className='mt-2'>Already have an account? <Link className='text-blue-500 hover:text-blue-600 cursor-pointer' to='/login'>Login</Link></p>
+        <p className='mt-2'>Already have an account? <Link className='text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer' to='/login'>Login</Link></p>
         <div className='absolute top-10'>
           {errors.displayName && <p className='text-xs text-red-400'>{errors.displayName.message}</p>}
           {errors.email && <p className='text-xs text-red-400'>{errors.email.message}</p>}

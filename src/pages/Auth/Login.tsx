@@ -36,7 +36,7 @@ export default function Login() {
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
       <div className='relative flex justify-center items-center mb-12'>
-        <h1 className='font-poppins text-5xl font-extrabold'>Chat</h1>
+        <h1 className='font-poppins text-5xl font-extrabold'>Chat.</h1>
         <MessageCircleMore className='absolute bottom-6 left-32 w-12 h-12 text-primary' />
       </div>
 
@@ -51,7 +51,7 @@ export default function Login() {
       </form>
 
       <div className='relative flex justify-center'>
-        <p className='mt-2'>Need an account? <Link className='text-blue-500 hover:text-blue-600 cursor-pointer' to='/signup'>Sign Up</Link></p>
+        <p className='mt-2'>Need an account? <Link className='text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer' to='/signup'>Sign Up</Link></p>
         <div className='absolute top-10'>
           {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
           {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
