@@ -20,7 +20,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
 
   // Handle user authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async authUser => {
       if (authUser) {
         // Fetch document from Firestore
         const userDocRef = doc(db, 'users', authUser.uid)
