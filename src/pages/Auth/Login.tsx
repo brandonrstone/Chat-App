@@ -32,7 +32,7 @@ export default function Login() {
       if (error instanceof FirebaseError) {
         // Handle specific Firebase authentication errors
         if (error.code === 'auth/invalid-credential') {
-          setError('password', { type: 'manual', message: 'Invalid email or passowrd.' })
+          setError('password', { type: 'manual', message: 'Invalid email or password.' })
         } else {
           setError('email', { type: 'manual', message: 'An unexpected error occurred. Please try again.' })
         }
