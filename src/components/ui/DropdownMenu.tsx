@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react'
-import { LogOut, Moon, Sun, User } from 'lucide-react'
+import { LogOut, User } from 'lucide-react'
+
+import { useThemeContext } from '../../hooks/useThemeContext'
+
+import { ThemeToggleButton } from './ThemeToggleButton'
 
 type DropdownMenuProps = {
   logout: () => void
@@ -7,37 +10,16 @@ type DropdownMenuProps = {
 }
 
 export function DropdownMenu({ logout, fadeIn }: DropdownMenuProps) {
-  const [darkMode, setDarkMode] = useState<boolean>(false)
-
-  // Set dark mode state based on localStorage on initial load
-  useEffect(() => {
-    // Check localStorage value and set initial state
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme === 'dark') {
-      setDarkMode(true)
-      document.documentElement.classList.add('dark')
-    } else {
-      setDarkMode(false)
-      document.documentElement.classList.remove('dark')
-    }
-  }, []) // Run once on component mount
-
-  // Toggle Dark Mode
-  const toggleDarkMode = () => {
-    setDarkMode(prevMode => {
-      const newMode = !prevMode
-      // Store the theme in localStorage and apply the corresponding class
-      localStorage.setItem('theme', newMode ? 'dark' : 'light')
-      document.documentElement.classList.toggle('dark', newMode)
-      return newMode
-    })
-  }
+  const { darkMode } = useThemeContext()
 
   return (
     <div className={`absolute -right-1.5 top-12 w-48 bg-white dark:bg-slate-800 border px-2 rounded-md shadow-md transition-opacity duration-300 z-50 ${fadeIn ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       <DropdownItem Icon={User} label='Profile' />
       <div className='border-b' />
-      <DropdownItem Icon={darkMode ? Moon : Sun} label={darkMode ? 'Dark' : 'Light'} onClick={toggleDarkMode} />
+      <div className='flex items-center space-x-2 my-2 p-1'>
+        <ThemeToggleButton />
+        <p>{darkMode ? 'Dark' : 'Light'}</p>
+      </div>
       <div className='border-b' />
       <DropdownItem Icon={LogOut} label='Logout' onClick={logout} />
     </div>

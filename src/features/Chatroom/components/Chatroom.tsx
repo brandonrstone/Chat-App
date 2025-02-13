@@ -150,7 +150,7 @@ export default function Chatroom() {
         {messages.map(message => (
           <div key={message.id}>
             <div>
-              <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black'}`}>{message.senderId === auth.currentUser?.uid ? user?.displayName : otherUser?.displayName}</strong>
+              <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black dark:text-green-300'}`}>{message.senderId === auth.currentUser?.uid ? user?.displayName : otherUser?.displayName}</strong>
               <span className='pl-2 text-sm text-slate-400'>{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
             </div>
             <p>{message.text}</p>
@@ -163,13 +163,14 @@ export default function Chatroom() {
       <div className='flex items-center'>
         <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white dark:bg-slate-800  border rounded-xl shadow-lg -translate-y-2'>
           <Input
-            className='w-full h-full flex-1 bg-white dark:bg-slate-800 shadow-none placeholder:text-black dark:placeholder:text-white'
+            className='w-full h-full flex-1 shadow-none border-none placeholder:text-slate-400 dark:placeholder:text-slate-400'
             value={newMessage}
-            onChange={e => setNewMessage(e.target.value)} placeholder={`Message @${otherUser?.displayName ?? <LoadingEllipsis />}`}
+            onChange={e => setNewMessage(e.target.value)}
+            placeholder={`Message @${otherUser?.displayName ?? <LoadingEllipsis />}`}
             onKeyDown={handleKeyDown}
           />
           <Button size='sm' className='h-full flex items-center justify-center' pill onClick={sendMessage}>
-            <ArrowUp />
+            <ArrowUp className='text-black dark:text-white' />
           </Button>
         </div>
       </div>

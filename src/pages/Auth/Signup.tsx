@@ -37,7 +37,7 @@ export default function Signup() {
         messages: [],
         createdAt: new Date()
       })
-      navigate('/dashboard')
+      navigate('/')
     } catch (error) {
       console.error('Signup error:', error)
     }
@@ -54,10 +54,10 @@ export default function Signup() {
 
       {/* Email/Password Signup Form */}
       <form className='flex flex-col justify-center items-center space-y-1' onSubmit={handleSubmit(handleEmailSignup)}>
-        <Input className='shadow-md' type='text' placeholder='Display Name' {...register('displayName')} />
-        <Input className='shadow-md' type='email' placeholder='Email' {...register('email')} />
-        <Input className='shadow-md' type='password' placeholder='Password' {...register('password')} />
-        <Input className='shadow-md' type='password' placeholder='Confirm Password' {...register('confirmPassword')} />
+        <Input type='text' placeholder='Display Name' {...register('displayName')} />
+        <Input type='email' placeholder='Email' {...register('email')} />
+        <Input type='password' placeholder='Password' {...register('password')} />
+        <Input type='password' placeholder='Confirm Password' {...register('confirmPassword')} />
         <Button className='w-full py-2' size='md' type='submit' disabled={isSubmitting}>{isSubmitting ? <LoadingEllipsis /> : 'Sign Up'}</Button>
       </form>
 

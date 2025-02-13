@@ -9,7 +9,7 @@ type HeaderProps = {
 
 export const ChatroomHeader = ({ recipient }: HeaderProps) => (
   <div className='w-full absolute top-0 flex justify-between items-center py-4 p-2 drop-shadow-lg bg-white dark:bg-slate-800'>
-    <Link to='/dashboard' >
+    <Link to='/' >
       <ChevronLeft className='text-center text-primary hover:text-primary/90 active:scale-90 transition-all duration-300' />
     </Link>
 

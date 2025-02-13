@@ -54,13 +54,14 @@ export function UserSearch() {
   return (
     <div className='relative sm:w-[300px] md:w-[400px] flex flex-col justify-center items-center'>
       <div className='mb-2 font-semibold'>Chat App v1.0</div>
-      <Input className='w-full rounded-full bg-white dark:bg-slate-800 shadow-md placeholder:text-black dark:outline-white dark:border outline-0 dark:placeholder:text-white placeholder:text-sm' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
+      <Input className='w-full rounded-full placeholder:text-slate-400 dark:placeholder:text-slate-400' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
+      {/* Render either a queried user list or users of recent chats */}
       <div className='absolute top-[5rem] w-full flex justify-center items-center'>
         {searchQuery.length > 0 && userSuggestions.length > 0 ? (
           <div className='w-full max-h-60 mt-2 p-2 bg-white dark:bg-slate-800 border rounded-md shadow-md overflow-y-auto'>
             {userSuggestions.map((user, index) => (
-              <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 cursor-pointer group' onClick={() => startChat(user.uid)}>
+              <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 dark:hover:bg-green-300/50 cursor-pointer group' onClick={() => startChat(user.uid)}>
                 <span>@{user.displayName}</span>
                 <ChevronRight className='w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-[-10px] transition-all duration-300 ease-out' />
               </div>

@@ -26,7 +26,7 @@ export default function TestVerificationSignUp() {
 
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
-      <Input className='shadow-md' type='text' value={email} onChange={e => setEmail(e.target.value)} />
+      <Input type='text' value={email} onChange={e => setEmail(e.target.value)} />
       <Button onClick={sendSignInEmail}>Send Code</Button>
     </div>
   )

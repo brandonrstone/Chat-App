@@ -6,12 +6,12 @@ import Login from './pages/Auth/Login'
 import Chatroom from './features/Chatroom/components/Chatroom'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 import TestVerificationSignUp from './pages/Auth/TestVerificationSignUp'
+import NotFound from './components/routing/NotFound'
 
 /*
 TODO:
 
-- If search results === 0 don't return a drop down
-- Dark mode support
+- Dedicated colors for darkmode
 - Incorrect username/password feedback
 - email verification codes for signup
 - Profile
@@ -24,7 +24,7 @@ TODO:
 
 export default function App() {
   return (
-    <html className='text-black dark:text-white bg-white dark:bg-slate-800'>
+    <div className='text-black dark:text-white bg-white dark:bg-slate-800'>
       <Router>
         <Routes>
           <Route path='/signup' element={<Signup />} />
@@ -34,8 +34,9 @@ export default function App() {
             <Route path='/' element={<Dashboard />} />
             <Route path='/chat/:chatroomId' element={<Chatroom />} />
           </Route>
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </Router>
-    </html>
+    </div>
   )
 }

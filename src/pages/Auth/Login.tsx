@@ -25,7 +25,7 @@ export default function Login() {
   async function handleEmailLogin(data: LoginFormData) {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
-        .then(() => navigate(location.state?.from?.pathname || '/dashboard'))
+        .then(() => navigate(location.state?.from?.pathname || '/'))
         // TODO: Add logic for incorrect email/password
         .catch(console.error)
     } catch (error) {
@@ -43,8 +43,8 @@ export default function Login() {
       <h2 className='mb-2 text-xl font-semibold text-primary'>Login</h2>
 
       <form className='flex flex-col justify-center items-center space-y-2' onSubmit={handleSubmit(handleEmailLogin)}>
-        <Input className='shadow-md' type='text' placeholder='Email' {...register('email')} />
-        <Input className='shadow-md' type='password' placeholder='Password' {...register('password')} />
+        <Input type='text' placeholder='Email' {...register('email')} />
+        <Input type='password' placeholder='Password' {...register('password')} />
         <Button className='w-full py-2' size='md' type='submit' disabled={isSubmitting}>
           {isSubmitting ? <LoadingEllipsis /> : 'Login'}
         </Button>
