@@ -9,7 +9,7 @@ export function Header() {
   const { user, logout } = useUserContext()
   const [isOpen, setIsOpen] = useState(false)
   const [fadeIn, setFadeIn] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement | null>(null)
   const navigate = useNavigate()
 
   // Handles propagation on hamburger - weird but it works when clicking off the ref

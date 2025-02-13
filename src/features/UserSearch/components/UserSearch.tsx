@@ -10,6 +10,7 @@ import { useUserContext } from '../../../hooks/useUserContext'
 
 import { Input } from '../../../components/ui/Input'
 import { Pill } from '../../../components/ui/Pill'
+import { SkeletonPill } from '../../../components/ui/SkeletonPill'
 
 export function UserSearch() {
   const { user, recentChatroomUsers } = useUserContext()
@@ -61,26 +62,38 @@ export function UserSearch() {
       <Input className='w-full rounded-full placeholder:text-slate-400 dark:placeholder:text-slate-400' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
       {/* Render either a queried user list or users of recent chats */}
-      <div className='absolute top-[7rem] w-full flex justify-center items-center'>
-        {searchQuery.length > 0 && userSuggestions.length > 0 ? (
-          <div className='w-full max-h-60 mt-2 p-2 bg-white dark:bg-slate-800 border rounded-md shadow-md overflow-y-auto'>
-            {userSuggestions.map((user, index) => (
-              <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 dark:hover:bg-green-300/50 cursor-pointer group' onClick={() => startChat(user.uid)}>
-                <span>@{user.displayName}</span>
-                <ChevronRight className='w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-[-10px] transition-all duration-300 ease-out' />
-              </div>
-            ))}
-          </div>
-        ) : (
-          // If not searching, render recent chat users
-          <div className='w-full max-h-60 flex justify-center items-center flex-wrap mt-2 rounded-md'>
-            {recentChatroomUsers
-              .map(user => (
-                <Pill key={user.uid} displayName={user.displayName} userId={user.uid} onClick={() => startChat(user.uid)} />
+      {user ? (
+        <div className='absolute top-[7rem] w-full flex justify-center items-center'>
+          {searchQuery.length > 0 && userSuggestions.length > 0 ? (
+            <div className='w-full max-h-60 mt-2 p-2 bg-white dark:bg-slate-800 border rounded-md shadow-md overflow-y-auto'>
+              {userSuggestions.map((user, index) => (
+                <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 dark:hover:bg-green-300/50 cursor-pointer group' onClick={() => startChat(user.uid)}>
+                  <span>@{user.displayName}</span>
+                  <ChevronRight className='w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-[-10px] transition-all duration-300 ease-out' />
+                </div>
               ))}
+            </div>
+          ) : (
+            // If not searching, render recent chat users
+            <div className='w-full max-h-60 flex justify-center items-center flex-wrap mt-2 rounded-md'>
+              {recentChatroomUsers
+                .map(user => (
+                  <Pill key={user.uid} displayName={user.displayName} userId={user.uid} onClick={() => startChat(user.uid)} />
+                ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className='absolute top-[7rem] w-full flex justify-center items-center'>
+          <div className='w-full max-h-60 flex justify-center items-center flex-wrap mt-2 rounded-md'>
+            <SkeletonPill width='w-28' />
+            <SkeletonPill width='w-20' />
+            <SkeletonPill width='w-32' />
+            <SkeletonPill width='w-32' />
+            <SkeletonPill width='w-24' />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

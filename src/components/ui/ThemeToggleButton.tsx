@@ -15,7 +15,7 @@ export function ThemeToggleButton() {
           className='w-6 h-6 bg-white dark:bg-slate-900 rounded-full shadow-md'
           initial={{ x: darkMode ? 24 : 0 }}
           animate={{ x: darkMode ? 28 : -4 }}
-          transition={{ stiffness: 300, damping: 20 }}
+          transition={{ stiffness: 50 }}
         />
       </button>
     </div>
