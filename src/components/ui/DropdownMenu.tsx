@@ -33,7 +33,7 @@ type DropdownItemProps = {
 }
 
 const DropdownItem = ({ Icon, label, onClick }: DropdownItemProps) => (
-  <div className='flex items-center my-2 p-1 rounded-md hover:bg-primary/20 cursor-pointer' onClick={onClick}>
+  <div className='flex items-center my-2 p-1 rounded-md hover:bg-primary/20 dark:hover:bg-green-300/50 cursor-pointer' onClick={onClick}>
     <Icon className='w-5 h-5 mr-2' />
     <span>{label}</span>
   </div>
