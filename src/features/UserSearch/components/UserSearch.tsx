@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs } from 'firebase/firestore'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, MessageCircleMore } from 'lucide-react'
 
 import { db, type User } from '../../../config/Firebase'
 
@@ -53,11 +53,15 @@ export function UserSearch() {
 
   return (
     <div className='relative sm:w-[300px] md:w-[400px] flex flex-col justify-center items-center'>
-      <div className='mb-2 font-semibold'>Chat App v1.0</div>
+      <div className='relative flex justify-center items-center mb-3'>
+        <h1 className='font-poppins text-5xl font-extrabold'>Chat.</h1>
+        <MessageCircleMore className='absolute bottom-6 left-32 w-12 h-12 text-primary' />
+      </div>
+
       <Input className='w-full rounded-full placeholder:text-slate-400 dark:placeholder:text-slate-400' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
       {/* Render either a queried user list or users of recent chats */}
-      <div className='absolute top-[5rem] w-full flex justify-center items-center'>
+      <div className='absolute top-[7rem] w-full flex justify-center items-center'>
         {searchQuery.length > 0 && userSuggestions.length > 0 ? (
           <div className='w-full max-h-60 mt-2 p-2 bg-white dark:bg-slate-800 border rounded-md shadow-md overflow-y-auto'>
             {userSuggestions.map((user, index) => (
