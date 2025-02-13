@@ -21,7 +21,7 @@ export function UserSearch() {
     const queryText = e.target.value
     setSearchQuery(queryText)
 
-    if (queryText.length > 1) {
+    if (queryText.length > 0) {
       // Perform the Firestore query
       const q = query(
         collection(db, 'users'),
@@ -57,7 +57,7 @@ export function UserSearch() {
       <Input className='w-full rounded-full bg-white dark:bg-slate-800 shadow-md placeholder:text-black dark:outline-white dark:border outline-0 dark:placeholder:text-white placeholder:text-sm' onChange={handleUserSearch} value={searchQuery} placeholder='Search by username...' />
 
       <div className='absolute top-[5rem] w-full flex justify-center items-center'>
-        {searchQuery.length > 1 ? (
+        {searchQuery.length > 0 && userSuggestions.length > 0 ? (
           <div className='w-full max-h-60 mt-2 p-2 bg-white dark:bg-slate-800 border rounded-md shadow-md overflow-y-auto'>
             {userSuggestions.map((user, index) => (
               <div key={index} className='flex justify-between items-center py-1 px-2 rounded-md hover:bg-primary/20 cursor-pointer group' onClick={() => startChat(user.uid)}>

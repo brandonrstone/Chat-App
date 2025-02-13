@@ -7,5 +7,5 @@ export default function ProtectedRoute() {
 
   if (loading) return <LoadingEllipsis />
 
-  return authUser ? <Outlet /> : <Navigate to='/login' replace />;
+  return authUser ? <Outlet /> : <Navigate to='/login' replace />
 }
