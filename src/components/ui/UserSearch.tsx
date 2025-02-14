@@ -8,11 +8,11 @@ import { db, } from '../../config/Firebase'
 import type { User } from '../../contexts/UserContext'
 
 import { useUserContext } from '../../hooks/useUserContext'
+import { useChatroomsContext } from '../../hooks/useChatroomsContext'
 
 import { Input } from './Input'
 import { Pill } from './Pill'
 import { SkeletonPill } from './SkeletonPill'
-import { useChatroomsContext } from '../../hooks/useChatroomsContext'
 
 export function UserSearch() {
   const { user, recentChatroomUsers } = useUserContext()
@@ -26,11 +26,14 @@ export function UserSearch() {
     setSearchQuery(queryText)
 
     if (queryText.length > 0) {
-      // Perform the Firestore query
+      // Convert the search query to lowercase for case-insensitive comparison
+      const lowerCaseQuery = queryText.toLowerCase()
+
+      // Perform the Firestore query with lowercase matching
       const q = query(
         collection(db, 'users'),
-        where('displayName', '>=', queryText),
-        where('displayName', '<=', queryText + '\uf8ff') // This should match case-insensitive search
+        where('lowercaseDisplayName', '>=', lowerCaseQuery),
+        where('lowercaseDisplayName', '<=', lowerCaseQuery + '\uf8ff')
       )
 
       const querySnapshot = await getDocs(q)
