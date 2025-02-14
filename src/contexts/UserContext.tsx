@@ -1,11 +1,12 @@
 import { createContext, useEffect, useState, ReactNode } from 'react'
 import { toast } from 'react-toastify'
 
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
 import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot, updateDoc } from 'firebase/firestore'
 
 import { auth, db } from '../config/Firebase'
 import { useThemeContext } from '../hooks/useThemeContext'
+import { useAuthContext } from '../hooks/useAuthContext'
 
 export type User = {
   uid: string,
@@ -14,7 +15,6 @@ export type User = {
   createdAt: Date
   lastSeenTimestamp: Date
 }
-
 
 type UserContextType = {
   user: User | null
@@ -31,37 +31,41 @@ export const UserContext = createContext<UserContextType | null>(null)
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const { darkMode } = useThemeContext()
+  const { authUser, loading: authLoading } = useAuthContext() || {}
   const [user, setUser] = useState<User | null>(null)
   const [recentChatroomUsers, setRecentChatroomUsers] = useState<User[]>([])
   const [newMessages, setNewMessages] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(true)
 
-  // Initial use of handling the Auth user state
+  /*
+    Heirarchy is: Auth -> User -> Chatroom
+    This effect runs whenever there are changes to Authentication on the backend
+  */
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async authUser => {
-      if (authUser) {
-        const userDocRef = doc(db, 'users', authUser.uid)
-        const userSnap = await getDoc(userDocRef)
+    if (authLoading) return // Wait until auth loading is done
 
+    if (authUser) {
+      const userDocRef = doc(db, 'users', authUser.uid)
+      const fetchUser = async () => {
+        const userSnap = await getDoc(userDocRef)
         if (userSnap.exists()) {
           setUser({
             uid: authUser.uid,
             displayName: userSnap.data().displayName,
             email: userSnap.data().email,
             createdAt: userSnap.data().createdAt,
-            lastSeenTimestamp: userSnap.data().lastSeenTimestamp // Ensure correct field name
+            lastSeenTimestamp: userSnap.data().lastSeenTimestamp
           })
-        } else {
-          console.log('User document not found')
         }
-      } else {
-        setUser(null)
       }
-      setLoading(false)
-    })
 
-    return () => unsubscribe()
-  }, [])
+      fetchUser()
+    } else {
+      setUser(null)
+    }
+
+    setLoading(false)
+  }, [authUser, authLoading])
 
   // Fetch recent chatroom then tally up and return unread message count
   useEffect(() => {

@@ -40,7 +40,7 @@ export default function Profile() {
         </div>
       ) : (
         <div className='flex items-center space-x-1'>
-          <Input className='py-2' value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} />
+          <Input className='py-1.5' value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} />
           <Check className='text-green-300 hover:text-green-300/80 cursor-pointer transition-all ease-in-out' onClick={handleUpdateDisplayName} />
           <X className='text-red-300 hover:text-red-300/80 cursor-pointer transition-all ease-in-out' onClick={() => setIsEditing(false)} />
         </div>
