@@ -20,7 +20,6 @@ type UserContextType = {
   recentChatroomUsers: User[]
   newMessages: Record<string, number>
   setNewMessages: React.Dispatch<React.SetStateAction<Record<string, number>>>
-  resetUnreadMessages: (chatroomId: string) => void
   loading: boolean
   updateDisplayName: (newDisplayName: string) => void
   logout: () => Promise<void>
@@ -106,17 +105,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe() // Cleanup listener
   }, [user])
 
-  // This resets unread messages count when visiting a chatroom
-  const resetUnreadMessages = (chatroomId: string) => {
-    setNewMessages(prev => {
-      const newState = { ...prev }
-
-      // Remove the unread count for this chatroom
-      delete newState[chatroomId]
-      return newState
-    })
-  }
-
   async function updateDisplayName(newDisplayName: string) {
     if (!auth.currentUser || !newDisplayName) return
 
@@ -153,7 +141,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, recentChatroomUsers, newMessages, setNewMessages, resetUnreadMessages, loading, updateDisplayName, logout }}>
+    <UserContext.Provider value={{ user, recentChatroomUsers, newMessages, setNewMessages, loading, updateDisplayName, logout }}>
       {children}
     </UserContext.Provider>
   )
