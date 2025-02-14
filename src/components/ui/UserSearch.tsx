@@ -22,32 +22,28 @@ export function UserSearch() {
   const navigate = useNavigate()
 
   async function handleUserSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    const queryText = e.target.value
+    let queryText = e.target.value
+
+    // Input sanitization
+    queryText = queryText.replace(/[^a-z0-9_]/g, '').toLowerCase()
     setSearchQuery(queryText)
 
     if (queryText.length > 0) {
-      // Convert the search query to lowercase for case-insensitive comparison
-      const lowerCaseQuery = queryText.toLowerCase()
-
-      // Perform the Firestore query with lowercase matching
       const q = query(
         collection(db, 'users'),
-        where('lowercaseDisplayName', '>=', lowerCaseQuery),
-        where('lowercaseDisplayName', '<=', lowerCaseQuery + '\uf8ff')
+        where('lowercaseDisplayName', '>=', queryText),
+        where('lowercaseDisplayName', '<=', queryText + '\uf8ff')
       )
 
       const querySnapshot = await getDocs(q)
       const suggestedUsers: User[] = []
       querySnapshot.forEach(doc => {
         if (doc.data().uid === user?.uid) return
-
-        const userData = doc.data()
-        suggestedUsers.push(userData as User)
+        suggestedUsers.push(doc.data() as User)
       })
 
       setUserSuggestions(suggestedUsers)
     } else {
-      // Clear if input < 1 char
       setUserSuggestions([])
     }
   }

@@ -9,6 +9,8 @@ import { MessageCircleMore } from 'lucide-react'
 
 import { auth, db } from '../../config/Firebase'
 
+import { formatDisplayName } from '../../utils/formatters'
+
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
@@ -67,12 +69,6 @@ export default function Signup() {
     }
   }
 
-  function handleDisplayNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    // Ensure only lowercase letters, numbers, and underscores are allowed
-    const sanitizedValue = e.target.value.replace(/[^a-z0-9_]/g, '').toLowerCase()
-    e.target.value = sanitizedValue
-  }
-
   return (
     <div className='h-screen flex flex-col justify-center items-center'>
       <div className='relative flex justify-center items-center mb-12'>
@@ -84,7 +80,7 @@ export default function Signup() {
 
       {/* Email/Password Signup Form */}
       <form className='flex flex-col justify-center items-center space-y-1' onSubmit={handleSubmit(handleEmailSignup)}>
-        <Input type='text' placeholder='Display Name' {...register('displayName')} onChange={handleDisplayNameChange} pattern='[a-z0-9_]+' autoComplete='off' />
+        <Input type='text' placeholder='Display Name' {...register('displayName')} onChange={formatDisplayName} pattern='[a-z0-9_]+' autoComplete='off' />
         <Input type='email' placeholder='Email' {...register('email')} />
         <Input type='password' placeholder='Password' {...register('password')} />
         <Input type='password' placeholder='Confirm Password' {...register('confirmPassword')} />

@@ -1,7 +1,7 @@
 import { Timestamp, FieldValue } from 'firebase/firestore'
 import { format } from 'date-fns'
 
-export const formatTimestamp = (timestamp: Date | FieldValue | Timestamp | null | undefined) => {
+export function formatTimestamp(timestamp: Date | FieldValue | Timestamp | null | undefined) {
   if (!timestamp) return ''
 
   // Handle Firestore Timestamp and FieldValue types
@@ -30,4 +30,10 @@ export const formatTimestamp = (timestamp: Date | FieldValue | Timestamp | null 
 
   // Return format as --> '2/2/2024 at 7:00PM'
   return format(messageDate, "M/d/yyyy 'at' h:mm a")
+}
+
+export function formatDisplayName(e: React.ChangeEvent<HTMLInputElement>) {
+  // Allow only lowercase letters, numbers, and underscores for Display Name creation
+  const sanitizedValue = e.target.value.replace(/[^a-z0-9_]/g, '').toLowerCase()
+  e.target.value = sanitizedValue
 }

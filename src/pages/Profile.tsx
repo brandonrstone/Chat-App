@@ -13,12 +13,14 @@ export default function Profile() {
   const [newDisplayName, setNewDisplayName] = useState(user?.displayName || '')
 
   async function handleUpdateDisplayName() {
-    if (user?.displayName === newDisplayName) {
+    const sanitizedDisplayName = newDisplayName.replace(/[^a-z0-9_]/g, '').toLowerCase()
+
+    if (user?.displayName === sanitizedDisplayName) {
       setIsEditing(false)
       return
     }
 
-    await updateDisplayName(newDisplayName)
+    await updateDisplayName(sanitizedDisplayName)
     setIsEditing(false)
   }
 
@@ -40,7 +42,7 @@ export default function Profile() {
         </div>
       ) : (
         <div className='flex items-center space-x-1'>
-          <Input className='py-1.5' value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} />
+          <Input className='py-1.5' value={newDisplayName} onChange={e => setNewDisplayName(e.target.value.replace(/[^a-z0-9_]/g, '').toLowerCase())} />
           <Check className='text-green-300 hover:text-green-300/80 cursor-pointer transition-all ease-in-out' onClick={handleUpdateDisplayName} />
           <X className='text-red-300 hover:text-red-300/80 cursor-pointer transition-all ease-in-out' onClick={() => setIsEditing(false)} />
         </div>
