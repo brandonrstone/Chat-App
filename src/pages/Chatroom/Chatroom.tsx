@@ -40,28 +40,26 @@ export default function Chatroom() {
     return () => unsubscribe && unsubscribe()
   }, [fetchMessages])
 
-  // Scroll to the bottom of window, I think this is efficient
+  // Scroll to the bottom of window, I think this is pretty efficient
   useEffect(() => {
-    if (messages.length === 0) return;
+    if (messages.length === 0) return
 
     if (isInitialRender.current) {
       // Instantly jump to the bottom on first render
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
-      isInitialRender.current = false;
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+      isInitialRender.current = false
     } else {
       // Smooth scroll when new messages arrive
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [messages]);
+  }, [messages])
 
   // Smooth scroll on message send
   useEffect(() => {
     if (messages.length === 0) return
 
     requestAnimationFrame(() => {
-      messagesEndRef.current?.scrollIntoView({
-        behavior: isInitialRender.current ? 'auto' : 'smooth',
-      })
+      messagesEndRef.current?.scrollIntoView({ behavior: isInitialRender.current ? 'auto' : 'smooth', })
     })
 
     isInitialRender.current = false
@@ -71,9 +69,10 @@ export default function Chatroom() {
     if (chatroomId) fetchOtherChatroomUsers(chatroomId)
   }, [chatroomId, fetchOtherChatroomUsers])
 
-  // Handle Sending Message
+  // Send message by pressing enter key
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (chatroomId == null || newMessage.trim() === '') return
+
     if (e.key === 'Enter') {
       sendMessage(chatroomId, newMessage)
       setNewMessage('')

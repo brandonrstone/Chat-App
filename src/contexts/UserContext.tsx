@@ -1,8 +1,11 @@
 import { createContext, useEffect, useState, ReactNode } from 'react'
+import { toast } from 'react-toastify'
+
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot, updateDoc } from 'firebase/firestore'
 
 import { auth, db } from '../config/Firebase'
+import { useThemeContext } from '../hooks/useThemeContext'
 
 export type User = {
   uid: string,
@@ -20,12 +23,14 @@ type UserContextType = {
   setNewMessages: React.Dispatch<React.SetStateAction<Record<string, number>>>
   resetUnreadMessages: (chatroomId: string) => void
   loading: boolean
+  updateDisplayName: (newDisplayName: string) => void
   logout: () => Promise<void>
 }
 
 export const UserContext = createContext<UserContextType | null>(null)
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
+  const { darkMode } = useThemeContext()
   const [user, setUser] = useState<User | null>(null)
   const [recentChatroomUsers, setRecentChatroomUsers] = useState<User[]>([])
   const [newMessages, setNewMessages] = useState<Record<string, number>>({})
@@ -110,12 +115,50 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  async function updateDisplayName(newDisplayName: string) {
+    if (!auth.currentUser || !newDisplayName) return
+
+    // If the new display name is the same as the current one, just exit editing mode
+    if (user?.displayName === newDisplayName) return
+
+    try {
+      // Step 1: Check if the display name is already taken
+      const usersRef = collection(db, 'users')
+      const q = query(usersRef, where('displayName', '==', newDisplayName))
+      const querySnapshot = await getDocs(q)
+
+      if (!querySnapshot.empty) {
+        toast.error('That display name is already taken.')
+        return
+      }
+
+      // Step 2: Update the user's display name in Firestore
+      const userRef = doc(db, 'users', auth.currentUser.uid)
+      await updateDoc(userRef, { displayName: newDisplayName })
+
+      // Step 3: Update local state
+      setUser(prevUser => prevUser ? { ...prevUser, displayName: newDisplayName } : null)
+
+      toast.success('Display name updated!')
+    } catch (error) {
+      console.error('Failed to update display name:', error)
+      toast.error('Something went wrong. Please try again.', {
+        autoClose: 4000,
+        hideProgressBar: false,
+        style: {
+          backgroundColor: darkMode ? 'rgb(30 41 59 / var(--tw-bg-opacity, 1))' : 'white',
+          color: darkMode ? 'white' : '#b590ff'
+        }
+      })
+    }
+  }
+
   async function logout() {
     await signOut(auth)
   }
 
   return (
-    <UserContext.Provider value={{ user, recentChatroomUsers, newMessages, setNewMessages, resetUnreadMessages, loading, logout }}>
+    <UserContext.Provider value={{ user, recentChatroomUsers, newMessages, setNewMessages, resetUnreadMessages, loading, updateDisplayName, logout }}>
       {children}
     </UserContext.Provider>
   )

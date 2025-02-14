@@ -2,14 +2,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { FirebaseError } from 'firebase/app'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { MessageCircleMore } from 'lucide-react'
 
 import { auth } from '../../config/Firebase'
+
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
-import { FirebaseError } from 'firebase/app'
 
 const LoginSchema = z.object({
   email: z.string().email('Email address is not valid.'),

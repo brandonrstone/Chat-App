@@ -2,15 +2,16 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { FirebaseError } from 'firebase/app'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import { MessageCircleMore } from 'lucide-react'
 
 import { auth, db } from '../../config/Firebase'
+
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
-import { FirebaseError } from 'firebase/app'
 
 const SignupSchema = z.object({
   displayName: z.string().min(2, 'Display Name is not long enough.'),

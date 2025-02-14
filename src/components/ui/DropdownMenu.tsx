@@ -3,6 +3,7 @@ import { LogOut, User } from 'lucide-react'
 import { useThemeContext } from '../../hooks/useThemeContext'
 
 import { ThemeToggleButton } from './ThemeToggleButton'
+import { Link } from 'react-router-dom'
 
 type DropdownMenuProps = {
   logout: () => void
@@ -14,7 +15,9 @@ export function DropdownMenu({ logout, fadeIn }: DropdownMenuProps) {
 
   return (
     <div className={`absolute -right-1.5 top-12 w-48 bg-white dark:bg-slate-800 border px-2 rounded-md shadow-md transition-opacity duration-300 z-50 ${fadeIn ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-      <DropdownItem Icon={User} label='Profile' />
+      <Link to='/profile'>
+        <DropdownItem Icon={User} label='Profile' />
+      </Link>
       <div className='border-b' />
       <div className='flex items-center space-x-2 my-2 p-1'>
         <ThemeToggleButton />

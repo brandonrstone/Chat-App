@@ -5,6 +5,7 @@ import { addDoc, collection, doc, FieldValue, getDoc, getDocs, onSnapshot, order
 import { auth, db } from '../config/Firebase'
 
 import type { User } from './UserContext'
+
 import { useUserContext } from '../hooks/useUserContext'
 
 export type Message = {
@@ -132,6 +133,7 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
   const fetchMessagesForChatroom = useCallback((chatroomId: string) => {
     if (!chatroomId) return
 
+    // db --> chatrooms --> id --> messages collection
     const messagesRef = collection(db, 'chatrooms', chatroomId, 'messages')
     const q = query(messagesRef, orderBy('timestamp', 'asc'))
 
@@ -156,12 +158,11 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
       timestamp: serverTimestamp()
     }
 
-    // No need for manual UI update; Firestore `onSnapshot` will handle it
+    // No need for manual UI update... I guess Firestore onSnapshot handles it :)
     await addDoc(collection(db, 'chatrooms', chatroomId, 'messages'), newMessageData)
 
     setNewMessage('')
   }
-
 
   return (
     <ChatroomsContext.Provider value={{ chatrooms, setChatrooms, otherUsers, messages, setMessages, newMessage, setNewMessage, getOrCreateChatroom, fetchOtherChatroomUsers, fetchMessagesForChatroom, sendMessage }}>
