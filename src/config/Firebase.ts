@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,30 +21,12 @@ export type User = {
   email: string
   displayName: string
   createdAt: Date
+  lastSeenTimestamp: Date
 }
 
 export type Message = {
+  id: string
   senderId: string
   text: string
   timestamp: Date
 }
-
-export async function addUserToFirestore(user: User) {
-  const userRef = doc(db, 'users', user.uid)
-  const userSnap = await getDoc(userRef)
-
-  if (!userSnap.exists()) {
-    await setDoc(userRef, {
-      uid: user.uid,
-      displayName: user.displayName || 'Anonymous',
-      email: user.email,
-      messages: [],
-      createdAt: new Date()
-    })
-  }
-}
-
-// export async function signIn() {
-//   const result = await signInWithPopup(auth, googleProvider)
-//   await addUserToFirestore(result.user)
-// }

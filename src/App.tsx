@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Signup from './pages/Auth/Signup'
 import Login from './pages/Auth/Login'
-import Chatroom from './features/Chatroom/components/Chatroom'
+import Chatroom from './pages/Chatroom/Chatroom'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 import TestVerificationSignUp from './pages/Auth/TestVerificationSignUp'
 import NotFound from './components/routing/NotFound'
@@ -13,7 +13,6 @@ TODO:
 
 - Enable Firebase functions to do 2FA Code
 - Dedicated colors for darkmode
-- email verification codes for signup
 - Profile
 - Make Brandon a contact show for all
 - Friend system

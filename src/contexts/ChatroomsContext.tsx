@@ -1,23 +1,27 @@
-import { createContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useEffect, useState, ReactNode, useCallback } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore'
 
 import { auth, db, Message } from '../config/Firebase'
 
 type ChatroomsContextType = {
   chatrooms: Message[]
   setChatrooms: React.Dispatch<React.SetStateAction<Message[]>>
+  getOrCreateChatroom: (userId1: string, userId2: string) => Promise<string>
 }
 
-export const ChatroomsContext = createContext<ChatroomsContextType | undefined>(undefined)
+export const ChatroomsContext = createContext<ChatroomsContextType | null>(null)
 
 export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) => {
   const [chatrooms, setChatrooms] = useState<Message[]>([])
 
+  const setChatroomsMemo = useCallback((newChatrooms: Message[]) => {
+    setChatrooms(newChatrooms)
+  }, [])
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, authUser => {
+    const unsubscribeAuth = onAuthStateChanged(auth, authUser => {
       if (authUser) {
-        // Listen to the chatrooms for the authenticated user
         const chatroomsRef = collection(db, 'users', authUser.uid, 'chatrooms')
         const unsubChatrooms = onSnapshot(chatroomsRef, snapshot => {
           const fetchedChatrooms = snapshot.docs.map(doc => {
@@ -27,26 +31,47 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
               id: doc.id,
               senderId: data.senderId || '',
               text: data.text || '',
-              timestamp: data.timestamp || 0,
+              timestamp: data.timestamp ? data.timestamp.toDate() : new Date(0),
               ...data,
             } as Message
           })
-
-          setChatrooms(fetchedChatrooms)
+          setChatroomsMemo(fetchedChatrooms)
         })
 
-        return () => unsubChatrooms()
+        return unsubChatrooms
       } else {
-        // No user, so clear chatrooms
-        setChatrooms([])
+        setChatroomsMemo([])
       }
     })
 
-    return () => unsubscribe()
-  }, [])
+    return unsubscribeAuth
+  }, [setChatroomsMemo])
+
+  async function getOrCreateChatroom(user1Id: string, user2Id: string) {
+    const chatroomsRef = collection(db, 'chatrooms')
+
+    // Query for an existing chatroom between these two users
+    const q = query(chatroomsRef, where('users', 'array-contains', user1Id))
+    const querySnapshot = await getDocs(q)
+
+    for (const doc of querySnapshot.docs) {
+      const chatroom = doc.data()
+      if (chatroom.users.includes(user2Id)) {
+        return doc.id
+      }
+    }
+
+    // If no chatroom exists, create a new one
+    const newChatroomRef = await addDoc(chatroomsRef, {
+      users: [user1Id, user2Id],
+      createdAt: serverTimestamp()
+    })
+
+    return newChatroomRef.id
+  }
 
   return (
-    <ChatroomsContext.Provider value={{ chatrooms, setChatrooms }}>
+    <ChatroomsContext.Provider value={{ chatrooms, setChatrooms, getOrCreateChatroom }}>
       {children}
     </ChatroomsContext.Provider>
   )

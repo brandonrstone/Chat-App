@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom'
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { ArrowUp } from 'lucide-react'
 
-import { db, auth, User } from '../../../config/Firebase'
-import { useUserContext } from '../../../hooks/useUserContext'
-import { formatTimestamp } from '../../../utils/formatters'
+import { db, auth, User } from '../../config/Firebase'
+import { useUserContext } from '../../hooks/useUserContext'
+import { formatTimestamp } from '../../utils/formatters'
 
-import { Button } from '../../../components/ui/Button'
-import { ChatroomHeader } from './ChatroomHeader'
-import { Input } from '../../../components/ui/Input'
-import { LoadingEllipsis } from '../../../components/ui/LoadingEllipses'
+import { Button } from '../../components/ui/Button'
+import { ChatroomHeader } from '../../components/ui/ChatroomHeader'
+import { Input } from '../../components/ui/Input'
+import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
 
 type Message = {
   id: string
@@ -83,6 +83,7 @@ export default function Chatroom() {
     fetchOtherUser()
   }, [chatroomId, user])
 
+  // Fetch messages for this chatroom
   useEffect(() => {
     if (!chatroomId) return
 

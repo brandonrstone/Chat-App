@@ -50,7 +50,8 @@ export default function Signup() {
         uid: userCredential.user.uid,
         email,
         displayName,
-        createdAt: new Date()
+        createdAt: new Date(),
+        lastSeenTimestamp: new Date()
       })
 
       navigate('/')

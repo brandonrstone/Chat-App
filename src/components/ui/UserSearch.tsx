@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { ChevronRight, MessageCircleMore } from 'lucide-react'
 
-import { db, type User } from '../../../config/Firebase'
+import { db, type User } from '../../config/Firebase'
 
-import { getOrCreateChatroom } from '../../Chatroom/service/ChatService'
-import { useUserContext } from '../../../hooks/useUserContext'
+import { useUserContext } from '../../hooks/useUserContext'
 
-import { Input } from '../../../components/ui/Input'
-import { Pill } from '../../../components/ui/Pill'
-import { SkeletonPill } from '../../../components/ui/SkeletonPill'
+import { Input } from './Input'
+import { Pill } from './Pill'
+import { SkeletonPill } from './SkeletonPill'
+import { useChatroomsContext } from '../../hooks/useChatroomsContext'
 
 export function UserSearch() {
   const { user, recentChatroomUsers } = useUserContext()
+  const { getOrCreateChatroom } = useChatroomsContext()
   const [searchQuery, setSearchQuery] = useState('')
   const [userSuggestions, setUserSuggestions] = useState<User[]>([])
   const navigate = useNavigate()
