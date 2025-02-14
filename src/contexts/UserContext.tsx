@@ -5,7 +5,6 @@ import { signOut } from 'firebase/auth'
 import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot, updateDoc } from 'firebase/firestore'
 
 import { auth, db } from '../config/Firebase'
-import { useThemeContext } from '../hooks/useThemeContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
 export type User = {
@@ -30,7 +29,6 @@ type UserContextType = {
 export const UserContext = createContext<UserContextType | null>(null)
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
-  const { darkMode } = useThemeContext()
   const { authUser, loading: authLoading } = useAuthContext() || {}
   const [user, setUser] = useState<User | null>(null)
   const [recentChatroomUsers, setRecentChatroomUsers] = useState<User[]>([])
@@ -146,14 +144,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       toast.success('Display name updated!')
     } catch (error) {
       console.error('Failed to update display name:', error)
-      toast.error('Something went wrong. Please try again.', {
-        autoClose: 4000,
-        hideProgressBar: false,
-        style: {
-          backgroundColor: darkMode ? 'rgb(30 41 59 / var(--tw-bg-opacity, 1))' : 'white',
-          color: darkMode ? 'white' : '#b590ff'
-        }
-      })
+      toast.error('Something went wrong. Please try again.')
     }
   }
 
