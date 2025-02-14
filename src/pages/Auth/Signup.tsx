@@ -88,7 +88,7 @@ export default function Signup() {
       </form>
 
       <div className='relative flex justify-center'>
-        <p className='mt-2'>Already have an account? <Link className='text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer' to='/login'>Login</Link></p>
+        <p className='mt-2'>Already have an account? <Link className='text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-all ease-in-out' to='/login'>Login</Link></p>
         <div className='absolute top-10'>
           {errors.displayName && <p className='text-xs text-red-400'>{errors.displayName.message}</p>}
           {errors.email && <p className='text-xs text-red-400'>{errors.email.message}</p>}
