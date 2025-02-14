@@ -1,11 +1,23 @@
+import { Timestamp, FieldValue } from 'firebase/firestore'
 import { format } from 'date-fns'
 
-export const formatTimestamp = (timestamp: Date) => {
+export const formatTimestamp = (timestamp: Date | FieldValue | Timestamp | null | undefined) => {
   if (!timestamp) return ''
 
-  const messageDate = new Date(timestamp)
-  const now = new Date()
+  // Handle Firestore Timestamp and FieldValue types
+  let messageDate: Date
+  if (timestamp instanceof Timestamp) {
+    // Convert Firestore Timestamp to Date
+    messageDate = timestamp.toDate()
+  } else if (timestamp instanceof FieldValue) {
+    // If it's FieldValue (e.g., serverTimestamp), return empty or handle accordingly
+    return ''
+  } else {
+    // For Date or other cases
+    messageDate = new Date(timestamp)
+  }
 
+  const now = new Date()
   const isToday = messageDate.toDateString() === now.toDateString()
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)

@@ -15,18 +15,3 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 export const googleProvider = new GoogleAuthProvider()
-
-export type User = {
-  uid: string,
-  email: string
-  displayName: string
-  createdAt: Date
-  lastSeenTimestamp: Date
-}
-
-export type Message = {
-  id: string
-  senderId: string
-  text: string
-  timestamp: Date
-}

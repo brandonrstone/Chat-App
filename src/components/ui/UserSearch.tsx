@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { ChevronRight, MessageCircleMore } from 'lucide-react'
 
-import { db, type User } from '../../config/Firebase'
+import { db, } from '../../config/Firebase'
+
+import type { User } from '../../contexts/UserContext'
 
 import { useUserContext } from '../../hooks/useUserContext'
 

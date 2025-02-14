@@ -2,7 +2,16 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore'
 
-import { auth, db, User } from '../config/Firebase'
+import { auth, db } from '../config/Firebase'
+
+export type User = {
+  uid: string,
+  email: string
+  displayName: string
+  createdAt: Date
+  lastSeenTimestamp: Date
+}
+
 
 type UserContextType = {
   user: User | null

@@ -1,177 +1,118 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { ArrowUp } from 'lucide-react'
 
-import { db, auth, User } from '../../config/Firebase'
-import { useUserContext } from '../../hooks/useUserContext'
-import { formatTimestamp } from '../../utils/formatters'
+import { db, auth } from '../../config/Firebase'
+import type { Message } from '../../contexts/ChatroomsContext'
 
+import { useUserContext } from '../../hooks/useUserContext'
+import { useChatroomsContext } from '../../hooks/useChatroomsContext'
+
+import { formatTimestamp } from '../../utils/formatters'
 import { Button } from '../../components/ui/Button'
 import { ChatroomHeader } from '../../components/ui/ChatroomHeader'
 import { Input } from '../../components/ui/Input'
 import { LoadingEllipsis } from '../../components/ui/LoadingEllipses'
 
-type Message = {
-  id: string
-  senderId: string
-  text: string
-  timestamp: Date
-}
-
 export default function Chatroom() {
   const { user } = useUserContext()
+  const { newMessage, setNewMessage, fetchOtherChatroomUsers, otherUsers, sendMessage } = useChatroomsContext()
   const { chatroomId } = useParams()
   const [messages, setMessages] = useState<Message[]>([])
-  const [newMessage, setNewMessage] = useState('')
-  const [otherUser, setOtherUser] = useState<User | null>(null)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const isInitialRender = useRef(true)
 
-  // Handle scrolling window behavior
-  useEffect(() => {
-    // Prevent scroll when there are no messages
-    if (messages.length === 0) return
-
-    // First render --> scroll to bottom instantly
-    if (isInitialRender.current) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-      isInitialRender.current = false // Set to false after first render
-    } else {
-      // On subsequent renders (new messages) --> use smooth scrolling
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }
-  }, [messages])
-
-  // Get current messages for a particular chatroom
-  useEffect(() => {
+  // Memoized Firestore listener to avoid unnecessary re-renders
+  const fetchMessages = useCallback(() => {
     if (!chatroomId) return
-
     const messagesRef = collection(db, 'chatrooms', chatroomId, 'messages')
     const q = query(messagesRef, orderBy('timestamp', 'asc'))
 
-    const unsubscribe = onSnapshot(q, snapshot => {
+    return onSnapshot(q, snapshot => {
       setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message)))
     })
-
-    return () => unsubscribe()
   }, [chatroomId])
 
-  // Fetch the information of other user
+  // Message listener
   useEffect(() => {
-    const fetchOtherUser = async () => {
-      if (!chatroomId || !user) return
+    const unsubscribe = fetchMessages()
+    return () => unsubscribe && unsubscribe()
+  }, [fetchMessages])
 
-      const chatroomRef = doc(db, 'chatrooms', chatroomId)
-      const chatroomSnap = await getDoc(chatroomRef)
-
-      if (chatroomSnap.exists()) {
-        const { users } = chatroomSnap.data()
-        const otherUserId = users.find((uid: string) => uid !== user.uid)
-
-        if (otherUserId) {
-          const userRef = doc(db, 'users', otherUserId)
-          const userSnap = await getDoc(userRef)
-
-          if (userSnap.exists()) {
-            setOtherUser(userSnap.data() as User)
-          }
-        }
-      }
-    }
-
-    fetchOtherUser()
-  }, [chatroomId, user])
-
-  // Fetch messages for this chatroom
+  // Scroll to the bottom of window, I think this is efficient
   useEffect(() => {
-    if (!chatroomId) return
+    if (messages.length === 0) return;
 
-    const messagesRef = collection(db, 'chatrooms', chatroomId, 'messages')
-
-    const q = query(messagesRef, orderBy('timestamp', 'asc'))
-
-    // Subscribe to Firestore updates
-    const unsubscribe = onSnapshot(q, snapshot => {
-      const snapshotMessages = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        // This needs to be converted from FS timestamp to Date
-        timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
-      }))
-      setMessages(snapshotMessages as Message[])
-    })
-
-    return () => unsubscribe()
-  }, [chatroomId])
-
-  async function sendMessage() {
-    if (!newMessage.trim() || !auth.currentUser) return
-
-    const newMessageData: Message = {
-      id: crypto.randomUUID(), // Temporary ID for React's key prop
-      senderId: auth.currentUser.uid,
-      text: newMessage,
-      timestamp: new Date() // Set local timestamp immediately
+    if (isInitialRender.current) {
+      // Instantly jump to the bottom on first render
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+      isInitialRender.current = false;
+    } else {
+      // Smooth scroll when new messages arrive
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
+  }, [messages]);
 
-    // Optimistically update UI
-    setMessages(prevMessages => [...prevMessages, newMessageData])
+  // Smooth scroll on message send
+  useEffect(() => {
+    if (messages.length === 0) return
 
-    // Send message to Firestore
-    await addDoc(collection(db, 'chatrooms', chatroomId!, 'messages'), {
-      senderId: auth.currentUser.uid,
-      text: newMessage,
-      timestamp: serverTimestamp() // Firestore will replace this later
+    requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: isInitialRender.current ? 'auto' : 'smooth',
+      })
     })
 
-    // Update lastActivity timestamp of the chatroom
-    const chatroomRef = doc(db, 'chatrooms', chatroomId!)
-    await updateDoc(chatroomRef, {
-      lastActivity: serverTimestamp() // Set lastActivity to the current server timestamp
-    })
+    isInitialRender.current = false
+  }, [messages])
 
-    setNewMessage('')
-  }
+  useEffect(() => {
+    if (chatroomId) fetchOtherChatroomUsers(chatroomId)
+  }, [chatroomId, fetchOtherChatroomUsers])
 
-  // Send message by hitting enter key
+  // Handle Sending Message
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && newMessage.trim() !== '') {
-      sendMessage()
+    if (chatroomId == null || newMessage.trim() === '') return
+    if (e.key === 'Enter') {
+      sendMessage(chatroomId, newMessage)
       setNewMessage('')
       e.preventDefault()
     }
   }
 
   return (
-    <div className='h-screen flex flex-col justify-between'>
-      <ChatroomHeader recipient={otherUser?.displayName} />
+    <div className="h-screen flex flex-col justify-between">
+      <ChatroomHeader recipient={otherUsers[0]?.displayName} />
 
-      <div className='flex-1 pb-6 p-2 mt-14 overflow-x-scroll'>
-        {messages.map(message => (
+      {/* Messages List */}
+      <div className="flex-1 pb-6 p-2 mt-14 overflow-y-scroll">
+        {messages.map((message) => (
           <div key={message.id}>
             <div>
-              <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black dark:text-green-300'}`}>{message.senderId === auth.currentUser?.uid ? user?.displayName : otherUser?.displayName}</strong>
-              <span className='pl-2 text-sm text-slate-400'>{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
+              <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black dark:text-green-300'}`}>
+                {message.senderId === auth.currentUser?.uid ? user?.displayName : otherUsers[0]?.displayName}
+              </strong>
+              <span className="pl-2 text-sm text-slate-400">{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
             </div>
             <p>{message.text}</p>
           </div>
         ))}
-
         <div ref={messagesEndRef} />
       </div>
 
-      <div className='flex items-center'>
-        <div className='w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white dark:bg-slate-800  border rounded-xl shadow-lg -translate-y-2'>
+      {/* Input Field */}
+      <div className="flex items-center">
+        <div className="w-full flex justify-center items-center mx-2 mb-2 px-2 bg-white dark:bg-slate-800 border rounded-xl shadow-lg -translate-y-2">
           <Input
-            className='w-full h-full flex-1 shadow-none border-none placeholder:text-slate-400 dark:placeholder:text-slate-400'
+            className="w-full h-full flex-1 shadow-none border-none placeholder:text-slate-400 dark:placeholder:text-slate-400"
             value={newMessage}
-            onChange={e => setNewMessage(e.target.value)}
-            placeholder={`Message @${otherUser?.displayName ?? <LoadingEllipsis />}`}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder={`Message @${otherUsers[0]?.displayName ?? <LoadingEllipsis />}`}
             onKeyDown={handleKeyDown}
           />
-          <Button size='sm' className='h-full flex items-center justify-center' pill onClick={sendMessage}>
-            <ArrowUp className='text-black dark:text-white' />
+          <Button size="sm" className="h-full flex items-center justify-center" pill onClick={() => { }}>
+            <ArrowUp className="text-black dark:text-white" />
           </Button>
         </div>
       </div>
