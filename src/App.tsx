@@ -20,7 +20,6 @@ TODO:
 - Make Brandon a contact show for all
 - Friend system
 - Display multiple users if there are multiple in a chat
-- Search username should work with lowercase etc
 */
 
 export default function App() {

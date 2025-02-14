@@ -31,8 +31,8 @@ export function UserSearch() {
     if (queryText.length > 0) {
       const q = query(
         collection(db, 'users'),
-        where('lowercaseDisplayName', '>=', queryText),
-        where('lowercaseDisplayName', '<=', queryText + '\uf8ff')
+        where('displayName', '>=', queryText),
+        where('displayName', '<=', queryText + '\uf8ff')
       )
 
       const querySnapshot = await getDocs(q)

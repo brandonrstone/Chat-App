@@ -49,7 +49,7 @@ export function Header() {
 
   return (
     <div className='w-full absolute top-0 flex justify-between items-center p-4 bg-white dark:bg-slate-800 drop-shadow-lg z-50'>
-      {user ? <p className='text-slate-400 font-bold'>@{user?.displayName}</p> : <LoadingEllipsis />}
+      {user ? <p className='text-slate-400 dark:text-yellow-50 font-bold'>@{user?.displayName}</p> : <LoadingEllipsis />}
       <div ref={menuRef} className='relative'>
         <Hamburger isOpen={isOpen} toggle={handleToggle} />
         {isOpen && <DropdownMenu fadeIn={fadeIn} logout={logoutUser} />}
