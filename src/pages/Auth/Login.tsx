@@ -59,7 +59,7 @@ export default function Login() {
       </form>
 
       <div className='relative flex justify-center'>
-        <p className='mt-2'>Need an account? <Link className='text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer' to='/signup'>Sign Up</Link></p>
+        <p className='mt-2'>Need an account? <Link className='text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-all' to='/signup'>Sign Up</Link></p>
         <div className='absolute top-10'>
           {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
           {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}

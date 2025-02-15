@@ -108,25 +108,25 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
 
     if (chatroomSnap.exists()) {
       const { users } = chatroomSnap.data()
-      // Filter out the current user's ID from the list of users
       const otherUserIds = users.filter((uid: string) => uid !== user.uid)
 
-      // Loop through each user in the chatroom (except the current user)
-      for (const otherUserId of otherUserIds) {
-        const userRef = doc(db, 'users', otherUserId)
-        const userSnap = await getDoc(userRef)
-
-        if (userSnap.exists()) {
-          setOtherUsers(prevOtherUsers => {
-            const newUser = userSnap.data() as User
-            // Prevent adding the same user multiple times
-            if (!prevOtherUsers.some(u => u.uid === newUser.uid)) {
-              return [...prevOtherUsers, newUser]
-            }
-            return prevOtherUsers
-          })
-        }
+      if (otherUserIds.length === 0) {
+        setOtherUsers([])
+        return
       }
+
+      // Fetch all user documents in one go
+      const userDocs = await Promise.all(
+        otherUserIds.map((otherUserId: string) => getDoc(doc(db, 'users', otherUserId)))
+      )
+
+      // Extract valid user data
+      const fetchedUsers = userDocs
+        .filter(doc => doc.exists())
+        .map(doc => ({ uid: doc.id, ...doc.data() } as User))
+
+      // Update state with only the users in the current chatroom
+      setOtherUsers(fetchedUsers)
     }
   }
 
