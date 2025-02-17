@@ -3,7 +3,7 @@ import { ChevronLeft } from 'lucide-react'
 
 import { LoadingEllipsis } from './LoadingEllipses'
 
-export function ChatroomHeader({ recipients }: { recipients?: string }) {
+export function ChatroomHeader({ recipients }: { recipients: string }) {
   return (
     <div className='w-full absolute top-0 flex justify-between items-center py-4 p-2 drop-shadow-lg bg-white dark:bg-slate-800'>
       <Link to='/' >

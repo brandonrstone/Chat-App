@@ -36,15 +36,18 @@ export default function Chatroom() {
     return () => unsubscribe()
   }, [chatroomId])
 
-  // Scroll to the bottom of the chat when messages change
+  // Handle the visuals of messages in the chatroom
   useEffect(() => {
     if (messages.length === 0) return
 
-    requestAnimationFrame(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: isInitialRender.current ? 'auto' : 'smooth' })
-    })
-
-    isInitialRender.current = false
+    // On initial render, scroll instantly
+    if (isInitialRender.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+      isInitialRender.current = false
+    } else {
+      // After initial render, scroll smoothly
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
   }, [messages])
 
   // Fetch other chatroom users
@@ -70,7 +73,7 @@ export default function Chatroom() {
 
       {/* Messages List */}
       <div className="flex-1 pb-6 p-2 mt-14 overflow-y-scroll">
-        {messages.map((message) => (
+        {messages.map(message => (
           <div key={message.id}>
             <div>
               <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black dark:text-green-300'}`}>
