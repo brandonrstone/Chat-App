@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 
 import { UserContextProvider } from './contexts/UserContext.tsx'
-import { ChatroomsContextProvider } from './contexts/ChatroomsContext.tsx'
+import { ChatroomsContextProvider } from './contexts/ChatroomContext.tsx'
 import { AuthProvider } from './contexts/AuthContext.tsx'
 import { ThemeContextProvider } from './contexts/ThemeContext.tsx'
 

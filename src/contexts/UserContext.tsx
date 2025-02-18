@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { signOut } from 'firebase/auth'
@@ -27,7 +27,7 @@ type UserContextType = {
 
 export const UserContext = createContext<UserContextType | null>(null)
 
-export const UserContextProvider = ({ children }: { children: ReactNode }) => {
+export const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { authUser, loading: authLoading } = useAuthContext() || {}
   const [user, setUser] = useState<User | null>(null)
   const [recentChatroomUsers, setRecentChatroomUsers] = useState<User[]>([])
@@ -35,11 +35,12 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true)
 
   /*
-    Heirarchy is: Auth -> User -> Chatroom
     This effect runs whenever there are changes to Authentication on the backend
+    Heirarchy is: Auth -> User -> Chatroom
   */
   useEffect(() => {
-    if (authLoading) return // Wait until auth loading is done
+    // Wait until auth loading is done
+    if (authLoading) return
 
     if (authUser) {
       const userDocRef = doc(db, 'users', authUser.uid)
@@ -108,11 +109,11 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   async function updateDisplayName(newDisplayName: string) {
     if (!auth.currentUser || !newDisplayName) return
 
-    // If the new display name is the same as the current one, just exit editing mode
+    // If the new display name is the same as the current one, just exit
     if (user?.displayName === newDisplayName) return
 
     try {
-      // Step 1: Check if the display name is already taken
+      // Check if the display name is already taken
       const usersRef = collection(db, 'users')
       const q = query(usersRef, where('displayName', '==', newDisplayName))
       const querySnapshot = await getDocs(q)
@@ -122,11 +123,11 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
         return
       }
 
-      // Step 2: Update the user's display name in Firestore
+      // Update the user's display name in Firestore
       const userRef = doc(db, 'users', auth.currentUser.uid)
       await updateDoc(userRef, { displayName: newDisplayName })
 
-      // Step 3: Update local state
+      // Reflect within local state
       setUser(prevUser => prevUser ? { ...prevUser, displayName: newDisplayName } : null)
 
       toast.success('Display name updated!')

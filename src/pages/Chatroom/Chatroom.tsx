@@ -4,7 +4,7 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { ArrowUp } from 'lucide-react'
 
 import { db, auth } from '../../config/Firebase'
-import type { Message } from '../../contexts/ChatroomsContext'
+import type { Message } from '../../contexts/ChatroomContext'
 
 import { useUserContext } from '../../hooks/useUserContext'
 import { useChatroomsContext } from '../../hooks/useChatroomsContext'

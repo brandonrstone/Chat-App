@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import { ChatroomsContext } from '../contexts/ChatroomsContext'
+import { ChatroomsContext } from '../contexts/ChatroomContext'
 
 export function useChatroomsContext() {
   const chatroomsContext = useContext(ChatroomsContext)

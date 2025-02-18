@@ -13,10 +13,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authUser, setAuthUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Loads the user and handles previous auth state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setAuthUser(user)
-      // Stop loading when auth state is resolved
       setLoading(false)
     })
 

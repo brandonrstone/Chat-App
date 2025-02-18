@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useCallback, useEffect } from 'react'
+import { createContext, useState, useCallback, useEffect } from 'react'
 import { Unsubscribe } from 'firebase/auth'
 import { addDoc, collection, doc, FieldValue, getDoc, getDocs, onSnapshot, orderBy, query, serverTimestamp, Timestamp, where } from 'firebase/firestore'
 
@@ -38,14 +38,14 @@ type ChatroomsContextType = {
 
 export const ChatroomsContext = createContext<ChatroomsContextType | null>(null)
 
-export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) => {
+export const ChatroomsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserContext()
   const [chatrooms, setChatrooms] = useState<Chatroom[]>([])
   const [messages, setMessages] = useState<Message[]>([])
 
   // Fetch all chatrooms user is currently in
   useEffect(() => {
-    async function fetchChatrooms() {
+    async function fetchCurrentUserChatrooms() {
       const chatroomsRef = collection(db, 'chatrooms')
       const q = query(chatroomsRef, where('users', 'array-contains', user?.uid))
       const querySnapshot = await getDocs(q)
@@ -53,8 +53,6 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
       const chatroomsWithUsers = await Promise.all(
         querySnapshot.docs.map(async chatroomDoc => {
           const chatroom = chatroomDoc.data()
-
-          // Add the Firestore document ID (chatroom ID) to the object
           const chatroomId = chatroomDoc.id
 
           // Fetch user details for each uid in the chatroom
@@ -66,20 +64,20 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
             })
           )
 
-          return { id: chatroomId, ...chatroom, usersData: usersData.filter(Boolean) } // Include the ID
+          return { id: chatroomId, ...chatroom, usersData: usersData.filter(Boolean) }
         })
       )
 
       setChatrooms(chatroomsWithUsers as Chatroom[]) // Update state once
     }
 
-    fetchChatrooms()
+    fetchCurrentUserChatrooms()
   }, [user])
 
   const getOrCreateChatroom = useCallback(async (user1Id: string, user2Id: string) => {
     const chatroomsRef = collection(db, 'chatrooms')
 
-    // Query for an existing chatroom between these two users (first step)
+    // Query for an existing chatroom between these two users
     const q = query(chatroomsRef, where('users', 'array-contains', user1Id))
     const querySnapshot = await getDocs(q)
 
@@ -108,7 +106,7 @@ export const ChatroomsContextProvider = ({ children }: { children: ReactNode }) 
   const fetchMessagesForChatroom = useCallback((chatroomId: string) => {
     if (!chatroomId) return
 
-    // db --> chatrooms --> id --> messages collection
+    // Query order: db --> chatrooms --> id --> messages collection
     const messagesRef = collection(db, 'chatrooms', chatroomId, 'messages')
     const q = query(messagesRef, orderBy('timestamp', 'asc'))
 
