@@ -17,13 +17,15 @@ import { SkeletonText } from '../../components/ui/SkeletonText'
 
 export default function Chatroom() {
   const { user } = useUserContext()
-  const { chatrooms, fetchRecipients, recipients, sendMessage } = useChatroomsContext()
+  const { chatrooms, sendMessage } = useChatroomsContext()
   const { chatroomId } = useParams()
-  const [currentChatroom] = chatrooms.filter(chatroom => chatroom.id === chatroomId)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
+  const currentChatroom = chatrooms.find(chatroom => chatroom.id === chatroomId)
+  const recipients = currentChatroom?.usersData?.filter(recipient => recipient.uid !== user?.uid)
   const messagesDivEndpoint = useRef<HTMLDivElement | null>(null)
   const isInitialRender = useRef(true)
+  const recientDisplayNames = recipients ? recipients?.map(recipient => recipient.displayName).join(', ') : `${user?.uid}'s Chatroom`
 
   // Firestore message listener
   useEffect(() => {
@@ -53,11 +55,6 @@ export default function Chatroom() {
     }
   }, [messages])
 
-  // Fetch other chatroom users
-  useEffect(() => {
-    if (chatroomId) fetchRecipients(chatroomId)
-  }, [chatroomId, fetchRecipients])
-
   // Send message by pressing enter key
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (chatroomId == null || newMessage.trim() === '') return
@@ -79,7 +76,7 @@ export default function Chatroom() {
   return (
     <div className='h-screen flex flex-col justify-between'>
       {/* Chatroom Header */}
-      <ChatroomHeader recipients={currentChatroom.usersData.filter(chatUsers => chatUsers?.displayName !== user?.displayName).map(u => u.displayName).join(', ')} />
+      <ChatroomHeader recipients={recientDisplayNames} />
 
       {/* Messages List */}
       <div className='flex-1 pb-6 p-2 mt-14 overflow-y-scroll'>
@@ -88,8 +85,8 @@ export default function Chatroom() {
             <div>
               <strong className={`${message.senderId === auth.currentUser?.uid ? 'text-primary' : 'text-black dark:text-green-300'}`}>
                 {message.senderId === auth.currentUser?.uid
-                  ? user?.displayName
-                  : currentChatroom.usersData.find(u => u.uid === message.senderId)?.displayName || <SkeletonText width='54px' height='10px' />}
+                  ? user?.displayName || <SkeletonText width='54px' height='10px' />
+                  : currentChatroom?.usersData?.find(u => u.uid === message.senderId)?.displayName || <SkeletonText width='54px' height='10px' />}
               </strong>
               <span className='pl-2 text-sm text-slate-400'>{message.timestamp ? formatTimestamp(message.timestamp) : ''}</span>
             </div>
@@ -106,7 +103,7 @@ export default function Chatroom() {
             className='w-full h-full flex-1 shadow-none border-none placeholder:text-slate-400 dark:placeholder:text-slate-400'
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)}
-            placeholder={`Message @${recipients.length > 0 ? recipients[0].displayName : 'someone'}`}
+            placeholder={`Message @${recipients && recipients?.length > 0 ? recipients[0].displayName : 'someone'}`}
             onKeyDown={handleKeyDown}
           />
           <Button size='sm' className='h-full flex items-center justify-center' pill onClick={handleButtonSubmit} >
