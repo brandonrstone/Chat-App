@@ -27,7 +27,7 @@ type UserContextType = {
 export const UserContext = createContext<UserContextType | null>(null)
 
 export const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const { authUser, loading: authLoading } = useAuthContext() || {}
+  const { authUser, loading: authUserIsLoading } = useAuthContext() || {}
   const [user, setUser] = useState<User | null>(null)
   const [recentChatroomUsers, setRecentChatroomUsers] = useState<User[]>([])
   const [newMessages, setNewMessages] = useState<Record<string, number>>({})
@@ -38,7 +38,8 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     Heirarchy is: Auth -> User -> Chatroom
   */
   useEffect(() => {
-    if (authLoading) return
+    if (authUserIsLoading) return
+
     if (authUser) {
       const userDocRef = doc(db, 'users', authUser.uid)
       const fetchUser = async () => {
@@ -59,7 +60,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
       setUser(null)
       setLoading(false)
     }
-  }, [authUser, authLoading])
+  }, [authUser, authUserIsLoading])
 
 
   // Fetch recent chatroom then tally up and return unread message count

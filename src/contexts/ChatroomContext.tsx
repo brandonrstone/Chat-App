@@ -46,6 +46,8 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
   // Fetch all chatrooms user is currently in
   useEffect(() => {
     async function fetchCurrentUserChatrooms() {
+      if (!user) return
+
       const chatroomsRef = collection(db, 'chatrooms')
       const q = query(chatroomsRef, where('users', 'array-contains', user?.uid))
       const querySnapshot = await getDocs(q)
