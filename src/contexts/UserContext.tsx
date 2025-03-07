@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-
 import { signOut } from 'firebase/auth'
 import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot, updateDoc } from 'firebase/firestore'
 
@@ -39,9 +38,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     Heirarchy is: Auth -> User -> Chatroom
   */
   useEffect(() => {
-    // Wait until auth loading is done
     if (authLoading) return
-
     if (authUser) {
       const userDocRef = doc(db, 'users', authUser.uid)
       const fetchUser = async () => {
@@ -55,15 +52,15 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
             lastSeenTimestamp: userSnap.data().lastSeenTimestamp
           })
         }
+        setLoading(false)
       }
-
       fetchUser()
     } else {
       setUser(null)
+      setLoading(false)
     }
-
-    setLoading(false)
   }, [authUser, authLoading])
+
 
   // Fetch recent chatroom then tally up and return unread message count
   useEffect(() => {

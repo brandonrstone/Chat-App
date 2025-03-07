@@ -20,6 +20,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     })
 
+    if (!auth.currentUser) {
+      console.error('User is not signed in. Firestore access denied.');
+    }
+
+    console.log('Auth: ', auth)
+
     return () => unsubscribe()
   }, [])
 
