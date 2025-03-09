@@ -17,11 +17,11 @@ import { SkeletonText } from '../../components/ui/SkeletonText'
 
 export default function Chatroom() {
   const { user } = useUserContext()
-  const { chatrooms, sendMessage } = useChatroomsContext()
+  const { currentUserChatrooms, sendMessage } = useChatroomsContext()
   const { chatroomId } = useParams()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
-  const currentChatroom = chatrooms.find(chatroom => chatroom.id === chatroomId)
+  const currentChatroom = currentUserChatrooms.find(chatroom => chatroom.id === chatroomId)
   const recipients = currentChatroom?.usersData?.filter(recipient => recipient.uid !== user?.uid)
   const messagesDivEndpoint = useRef<HTMLDivElement | null>(null)
   const isInitialRender = useRef(true)

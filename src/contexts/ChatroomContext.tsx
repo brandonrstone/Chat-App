@@ -28,7 +28,7 @@ export type Message = {
 }
 
 type ChatroomsContextType = {
-  chatrooms: Chatroom[]
+  currentUserChatrooms: Chatroom[]
   messages: Message[]
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>
   getOrCreateChatroom: (userId1: string, userId2: string) => Promise<string>
@@ -40,7 +40,7 @@ export const ChatroomsContext = createContext<ChatroomsContextType | null>(null)
 
 export const ChatroomsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserContext()
-  const [chatrooms, setChatrooms] = useState<Chatroom[]>([])
+  const [currentUserChatrooms, setCurrentUserChatrooms] = useState<Chatroom[]>([])
   const [messages, setMessages] = useState<Message[]>([])
 
   // Fetch all chatrooms user is currently in
@@ -70,7 +70,7 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
         })
       )
 
-      setChatrooms(chatroomsWithUsers as Chatroom[]) // Update state once
+      setCurrentUserChatrooms(chatroomsWithUsers as Chatroom[]) // Update state once
     }
 
     fetchCurrentUserChatrooms()
@@ -138,7 +138,7 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
   }
 
   return (
-    <ChatroomsContext.Provider value={{ chatrooms, messages, setMessages, getOrCreateChatroom, fetchMessagesForChatroom, sendMessage }}>
+    <ChatroomsContext.Provider value={{ currentUserChatrooms, messages, setMessages, getOrCreateChatroom, fetchMessagesForChatroom, sendMessage }}>
       {children}
     </ChatroomsContext.Provider>
   )
