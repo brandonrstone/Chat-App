@@ -25,7 +25,7 @@ export default function Chatroom() {
   const recipients = currentChatroom?.usersData?.filter(recipient => recipient.uid !== user?.uid)
   const messagesDivEndpoint = useRef<HTMLDivElement | null>(null)
   const isInitialRender = useRef(true)
-  const recientDisplayNames = recipients ? recipients?.map(recipient => recipient.displayName).join(', ') : `${user?.uid}'s Chatroom`
+  const recipientDisplayNames = recipients ? recipients?.map(recipient => recipient.displayName).join(', ') : `${user?.uid}'s Chatroom`
 
   // Firestore message listener
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function Chatroom() {
   return (
     <div className='h-screen flex flex-col justify-between'>
       {/* Chatroom Header */}
-      <ChatroomHeader recipients={recientDisplayNames} />
+      <ChatroomHeader recipients={recipientDisplayNames} />
 
       {/* Messages List */}
       <div className='flex-1 pb-6 p-2 mt-14 overflow-y-scroll'>
