@@ -1,6 +1,6 @@
 import { ComponentPropsWithRef, forwardRef } from 'react'
 
-const inputStyles = 'p-3 pl-4 bg-white dark:bg-slate-800 rounded-md shadow-md placeholder:text-black border border-transparent dark:border-white dark:placeholder:text-slate-400 placeholder:text-sm'
+const inputStyles = 'p-3 pl-4 bg-white dark:bg-slate-800 rounded-md border border-transparent dark:border-white outline-none shadow-md placeholder:text-black dark:placeholder:text-slate-400 placeholder:text-sm'
 
 type InputProps = ComponentPropsWithRef<'input'> & {
   className?: string
