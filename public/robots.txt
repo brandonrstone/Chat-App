@@ -1,0 +1,7 @@
+# Block all crawlers from the /admin section
+User-agent: *
+Disallow: /admin/
+
+# Allow all crawlers to access everything else
+User-agent: *
+Allow: /
