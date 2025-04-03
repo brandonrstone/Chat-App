@@ -48,12 +48,13 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
     async function fetchCurrentUserChatrooms() {
       if (!user) return
 
-      const chatroomsRef = collection(db, 'chatrooms')
-      const q = query(chatroomsRef, where('users', 'array-contains', user?.uid))
-      const querySnapshot = await getDocs(q)
+      const chatroomsQuerySnapshot = await getDocs(query(
+        collection(db, 'chatrooms'),
+        where('users', 'array-contains', user?.uid))
+      )
 
       const chatroomsWithUsers = await Promise.all(
-        querySnapshot.docs.map(async chatroomDoc => {
+        chatroomsQuerySnapshot.docs.map(async chatroomDoc => {
           const chatroom = chatroomDoc.data()
           const chatroomId = chatroomDoc.id
 
@@ -76,11 +77,10 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
     fetchCurrentUserChatrooms()
   }, [user])
 
+  // Create or get existing chatroom; immediately update the state
   const getOrCreateChatroom = useCallback(async (user1Id: string, user2Id: string) => {
-    const chatroomsRef = collection(db, 'chatrooms')
-
     // Query for an existing chatroom between these two users
-    const querySnapshot = await getDocs(query(chatroomsRef, where('users', 'array-contains', user1Id)))
+    const querySnapshot = await getDocs(query(collection(db, 'chatrooms'), where('users', 'array-contains', user1Id)))
 
     for (const doc of querySnapshot.docs) {
       const chatroom = doc.data()
@@ -90,7 +90,7 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
     }
 
     // If there is no existing chatroom, create one
-    const newChatroomRef = await addDoc(chatroomsRef, {
+    const newChatroomRef = await addDoc(collection(db, 'chatrooms'), {
       users: [user1Id, user2Id],
       createdAt: serverTimestamp(),
       lastActivity: serverTimestamp(),
@@ -107,7 +107,7 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
     const userDocs = await Promise.all(userRefs.map(ref => getDoc(ref)))
     const usersData = userDocs.map(docSnap => (docSnap.exists() ? { uid: docSnap.id, ...docSnap.data() } : null)).filter(Boolean)
 
-    // **Manually update chatroom list before Firestore updates**
+    // Update chatroom list before Firestore updates; could be improved
     setCurrentUserChatrooms(prevChatrooms => [
       ...prevChatrooms,
       {
@@ -126,15 +126,13 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
     return newChatroomId
   }, [])
 
-
   const fetchMessagesForChatroom = useCallback((chatroomId: string) => {
     if (!chatroomId) return
 
     // Query order: db --> chatrooms --> id --> messages collection
-    const messagesRef = collection(db, 'chatrooms', chatroomId, 'messages')
-    const q = query(messagesRef, orderBy('timestamp', 'asc'))
+    const messagesQuery = query(collection(db, 'chatrooms', chatroomId, 'messages'), orderBy('timestamp', 'asc'))
 
-    const unsubscribe = onSnapshot(q, snapshot => {
+    const unsubscribe = onSnapshot(messagesQuery, snapshot => {
       const snapshotMessages = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),

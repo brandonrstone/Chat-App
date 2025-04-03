@@ -29,8 +29,7 @@ export function UserSearch() {
     setSearchQuery(queryText)
 
     if (queryText.length > 0) {
-      const q = query(
-        collection(db, 'users'),
+      const q = query(collection(db, 'users'),
         where('displayName', '>=', queryText),
         where('displayName', '<=', queryText + '\uf8ff')
       )
