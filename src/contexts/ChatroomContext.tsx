@@ -80,10 +80,8 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
     const chatroomsRef = collection(db, 'chatrooms')
 
     // Query for an existing chatroom between these two users
-    const q = query(chatroomsRef, where('users', 'array-contains', user1Id))
-    const querySnapshot = await getDocs(q)
+    const querySnapshot = await getDocs(query(chatroomsRef, where('users', 'array-contains', user1Id)))
 
-    // Check if user2 is in the chatroom users array
     for (const doc of querySnapshot.docs) {
       const chatroom = doc.data()
       if (chatroom.users.includes(user2Id)) {
@@ -91,19 +89,43 @@ export const ChatroomsContextProvider = ({ children }: { children: React.ReactNo
       }
     }
 
-    // If no chatroom exists, create a new one
+    // If there is no existing chatroom, create one
     const newChatroomRef = await addDoc(chatroomsRef, {
       users: [user1Id, user2Id],
       createdAt: serverTimestamp(),
-      lastActivity: new Date(),
+      lastActivity: serverTimestamp(),
       chatroomName: '',
       isPrivate: true,
       isActive: true,
       chatroomType: 'direct'
     })
 
-    return newChatroomRef.id
+    const newChatroomId = newChatroomRef.id
+
+    // Fetch user details for both users
+    const userRefs = [doc(db, 'users', user1Id), doc(db, 'users', user2Id)]
+    const userDocs = await Promise.all(userRefs.map(ref => getDoc(ref)))
+    const usersData = userDocs.map(docSnap => (docSnap.exists() ? { uid: docSnap.id, ...docSnap.data() } : null)).filter(Boolean)
+
+    // **Manually update chatroom list before Firestore updates**
+    setCurrentUserChatrooms(prevChatrooms => [
+      ...prevChatrooms,
+      {
+        id: newChatroomId,
+        users: [user1Id, user2Id],
+        createdAt: new Date(),
+        lastActivity: new Date(),
+        chatroomName: '',
+        isPrivate: true,
+        isActive: true,
+        chatroomType: 'direct',
+        usersData
+      }
+    ] as Chatroom[])
+
+    return newChatroomId
   }, [])
+
 
   const fetchMessagesForChatroom = useCallback((chatroomId: string) => {
     if (!chatroomId) return

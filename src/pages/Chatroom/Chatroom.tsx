@@ -25,8 +25,9 @@ export default function Chatroom() {
   const recipients = currentChatroom?.usersData?.filter(recipient => recipient.uid !== user?.uid)
   const messagesDivEndpoint = useRef<HTMLDivElement | null>(null)
   const isInitialRender = useRef(true)
-  const recipientDisplayNames = recipients ? recipients?.map(recipient => recipient.displayName).join(', ') : `${user?.uid}'s Chatroom`
+  const recipientDisplayNames = recipients?.map(recipient => recipient.displayName).join(', ')
 
+  console.log(currentUserChatrooms)
   // Firestore message listener
   useEffect(() => {
     if (!chatroomId) return

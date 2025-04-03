@@ -90,14 +90,23 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
       })
 
       if (otherUserIds.size > 0) {
-        const usersRef = collection(db, 'users')
-        const usersQuery = query(usersRef, where('uid', 'in', Array.from(otherUserIds)))
-        const usersSnapshot = await getDocs(usersQuery)
+        const usersSnapshot = await getDocs(query(collection(db, 'users'), where('uid', 'in', Array.from(otherUserIds))))
 
         const usersList: User[] = usersSnapshot.docs.map(doc => doc.data() as User)
-        setRecentChatroomUsers(usersList)
+
+        // Temp logic so my username is there by default; can be commented out when not looking for jobs!
+        const brandonQuery = await getDocs(query(collection(db, 'users'), where('displayName', '==', 'brandon')))
+        const [brandon] = brandonQuery.docs
+
+        if (usersList.find(user => user.displayName === 'brandon')) {
+          setRecentChatroomUsers(usersList)
+        } else {
+          setRecentChatroomUsers([brandon.data() as User, ...usersList])
+        }
       } else {
-        setRecentChatroomUsers([])
+        const brandonQuery = await getDocs(query(collection(db, 'users'), where('displayName', '==', 'brandon')))
+        const [brandon] = brandonQuery.docs
+        setRecentChatroomUsers([brandon.data() as User])
       }
     })
 
