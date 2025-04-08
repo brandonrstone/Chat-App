@@ -98,7 +98,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         const brandonQuery = await getDocs(query(collection(db, 'users'), where('displayName', '==', 'brandon')))
         const [brandon] = brandonQuery.docs
 
-        if (usersList.find(user => user.displayName === 'brandon')) {
+        if (usersList.find(user => user.uid === 'xRR65E2BTNNdgLbFmDwIVcpSE7t1')) {
           setRecentChatroomUsers(usersList)
         } else {
           setRecentChatroomUsers([brandon.data() as User, ...usersList])
